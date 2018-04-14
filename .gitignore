@@ -3,3 +3,5 @@ bin/*
 
 # ignore Visual Studio files
 .vs/*
+Win32/*
+Win64/*
