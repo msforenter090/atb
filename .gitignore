@@ -1,0 +1,5 @@
+# ignore build directory
+bin/*
+
+# ignore Visual Studio files
+.vs/*
