@@ -29,7 +29,7 @@ set(spdlog_include_directory "spdlog/include/")
 target_include_directories(${atb_target} PUBLIC ${spdlog_include_directory})
 
 set(Boost_USE_STATIC_LIBS        ON) # only find static libs
-find_package(Boost 1.66.0 EXACT REQUIRED thread system)
+find_package(Boost 1.62.0 EXACT REQUIRED thread system)
 if(Boost_FOUND)
     message(STATUS "Boost Include directory: "  ${Boost_INCLUDE_DIRS})
     message(STATUS "Boost Library directory: "  ${Boost_LIBRARY_DIRS})

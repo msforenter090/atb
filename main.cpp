@@ -38,6 +38,5 @@ int main(int argc, char** argv) {
     boost::thread t{ thread };
     t.join();
 
-    system("pause");
     return 0;
 }
