@@ -1,27 +1,18 @@
 #include <iostream>
 
-// ----------------------------------------------------------------------------
+#include <vld.h>
+
+// -----------------------------------------------------------------------------
 // Logging.
-// ----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 #include "spdlog/spdlog.h"
 
-// ----------------------------------------------------------------------------
-// Thread example.
-// ----------------------------------------------------------------------------
-#include <boost/thread.hpp>
-#include <boost/chrono.hpp>
 #include <iostream>
 
-void wait(int seconds) {
-    boost::this_thread::sleep_for(boost::chrono::seconds{ seconds });
-}
-
-void thread() {
-    for (int i = 0; i < 5; ++i) {
-        wait(1);
-        std::cout << i << '\n';
-    }
-}
+// -----------------------------------------------------------------------------
+// Test network connection.
+// -----------------------------------------------------------------------------
+#include "network_junction.h"
 
 int main(int argc, char** argv) {
     // ------------------------------------------------------------------------
@@ -31,12 +22,8 @@ int main(int argc, char** argv) {
 
     console->info("Welcome to spdlog!");
     console->error("Some error message with arg{}..", 1);
-
-    // ------------------------------------------------------------------------
-    // Test boost thread.
-    // ------------------------------------------------------------------------
-    boost::thread t{ thread };
-    t.join();
-
+    atb::network::junction::network_junction nj;
+    nj.start();
+    //nj.stop();
     return 0;
 }
