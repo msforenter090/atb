@@ -87,7 +87,7 @@ bool atb::network::junction::network_junction::start() noexcept {
 bool atb::network::junction::network_junction::stop() noexcept {
 
     bool success = true;
-    for each (auto client in impl->clients)
+    for (auto client : impl->clients)
         success &= client->stop();
     return success;
 }
