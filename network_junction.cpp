@@ -54,7 +54,7 @@ atb::network::junction::network_junction::network_junction() noexcept
 
 atb::network::junction::network_junction::~network_junction() noexcept {
 
-    for each (auto client in impl->clients)
+    for (auto client : impl->clients)
         delete client;
 
     impl->io_service.stop();
