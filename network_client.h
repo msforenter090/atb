@@ -20,7 +20,7 @@ namespace atb {
             public:
 
                 network_client(boost::asio::io_service& io_service,
-                    atb::network::address::ip_address_v4 remote,
+                    atb::network::address::ip_address_v4& remote,
                     atb::queue::thread_safe_queue& out_queue) noexcept;
 
                 ~network_client() noexcept;
@@ -45,14 +45,14 @@ namespace atb {
                 // Starts listening for remote device.
                 // </summary>
                 // -------------------------------------------------------------
-                void start() noexcept;
+                bool start() noexcept;
 
                 // -------------------------------------------------------------
                 // <summary>
                 // Stops listening for remote device and closes the connection.
                 // </summary>
                 // -------------------------------------------------------------
-                void stop() noexcept;
+                bool stop() noexcept;
             };
         }
     }

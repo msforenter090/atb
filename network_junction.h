@@ -1,8 +1,14 @@
 #pragma once
 
-#include "ip_address_v4.h"
-
+// -----------------------------------------------------------------------------
+// boost
+// -----------------------------------------------------------------------------
 #include <boost/asio.hpp>
+
+// -----------------------------------------------------------------------------
+// custom
+// -----------------------------------------------------------------------------
+#include "ip_address_v4.h"
 
 namespace atb {
     namespace network {
@@ -14,8 +20,6 @@ namespace atb {
 
             public:
                 network_junction_impl* impl;
-
-                void handle_connect(const boost::system::error_code& code);
 
             public:
 
@@ -49,10 +53,16 @@ namespace atb {
                 /// <summary>
                 /// Set devices to which to connect to.
                 /// </summary>
+                /// <param name="remote">
+                /// pointer to array of ipv4 addresses to connect to.
+                /// </param>
+                /// <param name="length">
+                /// number of ipv4 elements.
+                /// </param>
                 // -------------------------------------------------------------
-                // void remote_devices(
-                //     atb::network::address::ip_address_v4 const * const remote,
-                //     unsigned short length) noexcept;
+                void remote_devices(
+                     atb::network::address::ip_address_v4 const * const remote,
+                     unsigned short length) noexcept;
             };
         }
     }

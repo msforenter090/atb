@@ -1,5 +1,8 @@
 #include "network_client.h"
 
+// -----------------------------------------------------------------------------
+// boost
+// -----------------------------------------------------------------------------
 #include <boost/thread.hpp>
 #include <iostream>
 
@@ -24,9 +27,9 @@ struct atb::network::junction::network_client::_network_client_impl {
 
 atb::network::junction::network_client::network_client(
     boost::asio::io_service& io_service,
-    atb::network::address::ip_address_v4 remote,
+    atb::network::address::ip_address_v4& remote,
     atb::queue::thread_safe_queue& out_queue) noexcept {
-    impl = new (std::nothrow) 
+    impl = new (std::nothrow)
         atb::network::junction::network_client::network_client_impl(io_service,
             remote, out_queue);
 }
@@ -41,15 +44,16 @@ void atb::network::junction::network_client::handle_connect(
     std::cout << "Callback: " << boost::this_thread::get_id() << std::endl;
     if (!code)
         std::cout << "Success." << std::endl;
-    else
+    else {
         std::cout << "!Success." << std::endl;
+    }
 }
 
 void atb::network::junction::network_client::handle_read(
     const boost::system::error_code& error) noexcept {
 }
 
-void atb::network::junction::network_client::start() noexcept {
+bool atb::network::junction::network_client::start() noexcept {
 
     // -------------------------------------------------------------------------
     // At this point ip address should be valid and no check will be performed.
@@ -62,7 +66,10 @@ void atb::network::junction::network_client::start() noexcept {
     impl->socket.async_connect(remote_device,
         boost::bind(&network_client::handle_connect, this,
         boost::asio::placeholders::error));
+
+    return true;
 }
 
-void atb::network::junction::network_client::stop() noexcept {
+bool atb::network::junction::network_client::stop() noexcept {
+    return true;
 }

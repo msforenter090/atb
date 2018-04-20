@@ -17,7 +17,6 @@
 // boost
 // -----------------------------------------------------------------------------
 #include <boost/thread.hpp>
-#include <iostream>
 
 // -----------------------------------------------------------------------------
 // custom
@@ -30,71 +29,36 @@
 // -----------------------------------------------------------------------------
 struct atb::network::junction::network_junction::_network_junction_impl {
 
-    atb::queue::thread_safe_queue queue;
-    std::vector<atb::network::junction::network_client*> clients;
+    atb::queue::thread_safe_queue                           queue;
+    std::vector<atb::network::junction::network_client*>    clients;
 
-    _network_junction_impl() {
-    }
+    boost::asio::io_service                                 io_service;
+    boost::asio::io_service::work                           work;
+    boost::thread                                           dispatch_thread;
 
-    ~_network_junction_impl() {
-        
+    std::unique_ptr<atb::network::address::ip_address_v4[]> remote_devices;
+    unsigned int                                            remote_devices_no;
+
+    _network_junction_impl()
+        : work(io_service), dispatch_thread(
+            boost::bind(&boost::asio::io_service::run, &io_service)),
+        remote_devices_no(0) {
     }
 };
-
-void atb::network::junction::network_junction::handle_connect(const boost::system::error_code& code) {
-    std::cout << "Callback: " << boost::this_thread::get_id() << std::endl;
-    if (!code) {
-        std::cout << "Success." << std::endl;
-    } else {
-        std::cout << "!Success." << std::endl;
-    }
-}
 
 atb::network::junction::network_junction::network_junction() noexcept
     : impl(nullptr) {
     impl = new (std::nothrow)
         atb::network::junction::network_junction::network_junction_impl();
-
-    boost::asio::io_service     io_service;
-    boost::asio::io_service::work work(io_service);
-    boost::thread               dispatch_thread(boost::bind(&boost::asio::io_service::run, &io_service));
-
-    boost::asio::ip::tcp::socket socket(io_service);
-    
-
-     atb::network::address::ip_address_v4 add;
-     char a[16] = "192.168.1.3\0";
-     memcpy(add.ip_address, a, 16);
-     add.port = 10001;
-
-     boost::system::error_code error;
-     boost::asio::ip::tcp::endpoint remote_device(
-         boost::asio::ip::address_v4::from_string(add.ip_address, error),
-         add.port
-     );
-     if (error)
-         std::cout << "Error in ip address." << std::endl;
-
-     socket.async_connect(remote_device,
-         boost::bind(&network_junction::handle_connect, this,
-             boost::asio::placeholders::error));
-
-     std::cout << "Main: " << boost::this_thread::get_id() << std::endl;
-     char line[100];
-     while (std::cin.getline(line, 100))
-     {
-         using namespace std; // For strlen and memcpy.
-         std::cout << line;
-     }
-
-     //dispatch_thread.join();
-//     cl1->start();
-//     impl->clients.push_back(cl1);
 }
 
 atb::network::junction::network_junction::~network_junction() noexcept {
-//    for each (auto client in impl->clients)
-//        delete client;
+
+    for each (auto client in impl->clients)
+        delete client;
+
+    impl->io_service.stop();
+    impl->dispatch_thread.join();
 
     delete impl;
     impl = nullptr;
@@ -102,11 +66,44 @@ atb::network::junction::network_junction::~network_junction() noexcept {
 
 bool atb::network::junction::network_junction::start() noexcept {
 
-//    for each (auto client in impl->clients)
-//        client->start();
-    return true;
+    bool success = true;
+    for (int client_count = 0;
+        client_count < impl->remote_devices_no; client_count++) {
+
+        // TODO: Handle failed to allocate memory.
+        atb::network::junction::network_client* cli = new (std::nothrow)
+            atb::network::junction::network_client(
+                impl->io_service,
+                impl->remote_devices[client_count],
+                impl->queue
+            );
+
+        success &= cli->start();
+        impl->clients.push_back(cli);
+    }
+    return success;
 }
 
 bool atb::network::junction::network_junction::stop() noexcept {
-    return true;
+
+    bool success = true;
+    for each (auto client in impl->clients)
+        success &= client->stop();
+    return success;
+}
+
+void atb::network::junction::network_junction::remote_devices(
+    atb::network::address::ip_address_v4 const * const remote,
+    unsigned short length) noexcept {
+    atb::network::address::ip_address_v4* addresses =
+        new (std::nothrow) atb::network::address::ip_address_v4[length];
+
+    if (addresses == nullptr)
+        return;
+
+    std::memcpy(addresses, remote,
+        length * sizeof(atb::network::address::ip_address_v4));
+
+    impl->remote_devices.reset(addresses);
+    impl->remote_devices_no = length;
 }
