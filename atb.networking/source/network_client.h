@@ -8,15 +8,14 @@
 // -----------------------------------------------------------------------------
 // custom
 // -----------------------------------------------------------------------------
-#include "def.h"
-#include "ip_address_v4.h"
-#include "thread_safe_queue.h"
+#include "atb.common/ip_address_v4.h"
+#include "atb.common/thread_safe_queue.h"
 
 namespace atb {
     namespace network {
         namespace junction {
 
-            class ATB_NETWORKING_API network_client {
+            class network_client {
 
             private:
                 struct _network_client_impl;

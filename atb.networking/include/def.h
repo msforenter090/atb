@@ -10,7 +10,7 @@
 // -----------------------------------------------------------------------------
 
 // Export macro
-#ifdef ATB_NETWORKING_API
+#ifdef ATB_NETWORKING_EXPORTS
 // If windows and no definistion of ATB_NETWORKING_API
 #define ATB_NETWORKING_API __declspec(dllexport)
 #else

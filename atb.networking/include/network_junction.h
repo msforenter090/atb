@@ -8,12 +8,13 @@
 // -----------------------------------------------------------------------------
 // custom
 // -----------------------------------------------------------------------------
-#include "ip_address_v4.h"
+// #include "def.h"
+#include "atb.common/ip_address_v4.h"
 
 namespace atb {
     namespace network {
         namespace junction {
-            class network_junction {
+            class  network_junction {
 
                 struct _network_junction_impl;
                 typedef struct _network_junction_impl network_junction_impl;

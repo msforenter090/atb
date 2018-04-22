@@ -1,0 +1,32 @@
+### TOP LEVEL FUNCTIONS START
+
+function (get_binary_path path)
+	set(${path} ${CMAKE_BINARY_DIR}/bin PARENT_SCOPE)
+endfunction()
+
+function (get_include_path path)
+	get_binary_path(bin_path)
+	set(${path} ${bin_path}/include PARENT_SCOPE)
+endfunction()
+
+function (get_platform_independent_static_library_name platform_independent_library_name library_name)
+	if(WIN32)
+		set(${platform_independent_library_name} ${library_name}.lib PARENT_SCOPE)
+	elseif(UNIX)
+		set(${platform_independent_library_name} lib${library_name}.a  PARENT_SCOPE)
+	else(WIN32)
+		message(FATAL_ERROR "Unknown platform. Platform must be WIN32 or UNIX.")
+	endif(WIN32)
+endfunction()
+
+function (get_platform_independent_shared_library_name platform_independent_library_name library_name)
+	if(WIN32)
+		set(${platform_independent_library_name} ${library_name}.lib PARENT_SCOPE)
+	elseif(UNIX)
+		set(${platform_independent_library_name} lib${library_name}.so  PARENT_SCOPE)
+	else(WIN32)
+		message(FATAL_ERROR "Unknown platform. Platform must be WIN32 or UNIX.")
+	endif(WIN32)
+endfunction()
+
+### TOP LEVEL FUNCTIONS END

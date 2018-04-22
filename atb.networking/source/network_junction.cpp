@@ -21,7 +21,6 @@
 // -----------------------------------------------------------------------------
 // custom
 // -----------------------------------------------------------------------------
-#include "thread_safe_queue.h"
 #include "network_client.h"
 
 // -----------------------------------------------------------------------------
@@ -67,7 +66,7 @@ atb::network::junction::network_junction::~network_junction() noexcept {
 bool atb::network::junction::network_junction::start() noexcept {
 
     bool success = true;
-    for (int client_count = 0;
+    for (unsigned int client_count = 0;
         client_count < impl->remote_devices_no; client_count++) {
 
         // TODO: Handle failed to allocate memory.
