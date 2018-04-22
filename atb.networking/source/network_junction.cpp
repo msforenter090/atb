@@ -52,13 +52,6 @@ atb::network::junction::network_junction::network_junction() noexcept
 }
 
 atb::network::junction::network_junction::~network_junction() noexcept {
-
-    for (auto client : impl->clients)
-        delete client;
-
-    impl->io_service.stop();
-    impl->dispatch_thread.join();
-
     delete impl;
     impl = nullptr;
 }
@@ -84,10 +77,15 @@ bool atb::network::junction::network_junction::start() noexcept {
 }
 
 bool atb::network::junction::network_junction::stop() noexcept {
+    impl->io_service.stop();
+    impl->dispatch_thread.join();
 
     bool success = true;
-    for (auto client : impl->clients)
+    for (auto client : impl->clients) {
         success &= client->stop();
+        delete client;
+    }
+
     return success;
 }
 

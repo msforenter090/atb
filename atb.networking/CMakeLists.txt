@@ -9,8 +9,7 @@ cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 
 set(atb_networking_target "atb.networking")
 
-set(headers "include/def.h"
-            "include/network_junction.h")
+set(headers "include/network_junction.h")
 set(sources "source/network_client.h"
             "source/network_client.cpp"
             "source/network_junction.cpp")

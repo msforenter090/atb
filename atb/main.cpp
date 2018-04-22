@@ -39,8 +39,9 @@ int main(int argc, char** argv) {
     nj.start();
 
     std::cout << "Main: " << boost::this_thread::get_id() << std::endl;
-    boost::this_thread::sleep_for(boost::chrono::milliseconds(4000));
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(1000));
 
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(40000));
     nj.stop();
 
     return 0;
