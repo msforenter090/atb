@@ -5,6 +5,7 @@ set(CMAKE_MIN_VERSION 3.9.0)
 cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 
 cmake_policy(SET CMP0060 NEW)
+enable_testing()
 
 include(${CMAKE_SOURCE_DIR}/cmake/defines/platform_definitions.txt)
 
@@ -35,10 +36,15 @@ if(Boost_FOUND)
 endif(Boost_FOUND)
 
 #---------------------------------------
-# atb.common
+# atb.common and test.atb.common
 #---------------------------------------
 set(atb_common_target "atb.common")
+set(atb_common_test_target "test.atb.common")
+
 add_subdirectory(${atb_common_target})
+add_subdirectory(${atb_common_test_target})
+
+add_test(NAME ${atb_common_test_target} COMMAND ${atb_common_test_target})
 
 #---------------------------------------
 # atb.networking
@@ -59,18 +65,31 @@ set(atb_target "atb")
 add_subdirectory(${atb_target})
 
 #-------------------------------------------------------------------------------
-# Build order
+# Build order main program and tests
 #-------------------------------------------------------------------------------
+#---------------------------------------
+# Build order main program
+#---------------------------------------
 add_dependencies(${atb_core_target} ${atb_common_target})
 add_dependencies(${atb_networking_target} ${atb_common_target})
 
 add_dependencies(${atb_target} ${atb_networking_target} ${atb_core_target})
 
+#---------------------------------------
+# Build order test
+#---------------------------------------
+add_dependencies(${atb_common_test_target} ${atb_common_target})
+
 #-------------------------------------------------------------------------------
 # Output for all targets
 #-------------------------------------------------------------------------------
-set_target_properties(${atb_common_target} ${atb_core_target} 
+set_target_properties(
+    # libraries and main program
+    ${atb_common_target} ${atb_core_target}
     ${atb_networking_target} ${atb_target}
+
+    # test programs
+    ${atb_common_test_target}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${atb_library_binary_path}
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${atb_library_binary_path}
@@ -78,8 +97,13 @@ set_target_properties(${atb_common_target} ${atb_core_target}
     RUNTIME_OUTPUT_DIRECTORY_RELEASE ${atb_library_binary_path}
 )
 
-set_target_properties(${atb_common_target} ${atb_core_target} 
+set_target_properties(
+    # libraries and main program
+    ${atb_common_target} ${atb_core_target}
     ${atb_networking_target} ${atb_target}
+
+    # test programs
+    ${atb_common_test_target}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${atb_library_binary_path}
     RUNTIME_OUTPUT_DIRECTORY ${atb_library_binary_path}
