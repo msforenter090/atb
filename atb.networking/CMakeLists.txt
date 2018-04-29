@@ -7,19 +7,20 @@
 #-------------------------------------------------------------------------------
 cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 
+message(STATUS "--------------------------------------------------------------")
+message(STATUS "-                       atb.networking                       -")
+message(STATUS "--------------------------------------------------------------")
+
 set(atb_networking_target "atb.networking")
 
-set(headers "include/network_junction.h")
+set(headers "include/read_callback.h"
+            "include/network_junction.h")
 set(sources "source/network_client.h"
             "source/network_client.cpp"
             "source/network_junction.cpp")
 
 include_directories("include/")
 include_directories("source/")
-
-message(STATUS "--------------------------------------------------------------")
-message(STATUS "-                       atb.networking                       -")
-message(STATUS "--------------------------------------------------------------")
 
 #-------------------------------------------------------------------------------
 # Compiler options and target

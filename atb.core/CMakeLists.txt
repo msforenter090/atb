@@ -3,6 +3,10 @@
 #-------------------------------------------------------------------------------
 cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 
+message(STATUS "--------------------------------------------------------------")
+message(STATUS "-                          atb.core                          -")
+message(STATUS "--------------------------------------------------------------")
+
 set(atb_core "atb.core")
 
 set(headers "")

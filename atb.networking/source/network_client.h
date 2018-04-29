@@ -8,8 +8,9 @@
 // -----------------------------------------------------------------------------
 // custom
 // -----------------------------------------------------------------------------
+#include "read_callback.h"
+#include "atb.common/logger.h"
 #include "atb.common/ip_address_v4.h"
-#include "atb.common/thread_safe_queue.h"
 
 namespace atb {
     namespace network {
@@ -46,25 +47,28 @@ namespace atb {
 
             public:
 
-                network_client(boost::asio::io_service& io_service,
-                    atb::network::address::ip_address_v4& remote,
-                    atb::queue::thread_safe_queue& out_queue) noexcept;
+                network_client(atb::logger::logger* logger,
+                    boost::asio::io_service& io_service,
+                    atb::network::address::ip_address_v4& remote) noexcept;
 
                 ~network_client() noexcept;
 
                 // -------------------------------------------------------------
-                // <summary>
-                // Starts listening for remote device.
-                // </summary>
+                /// <summary>
+                /// Starts listening for remote device.
+                /// </summary>
                 // -------------------------------------------------------------
                 bool start() noexcept;
 
                 // -------------------------------------------------------------
-                // <summary>
-                // Stops listening for remote device and closes the connection.
-                // </summary>
+                /// <summary>
+                /// Stops listening for remote device and closes the connection.
+                /// </summary>
                 // -------------------------------------------------------------
                 bool stop() noexcept;
+
+                void read_callback(
+                    atb::network::junction::read_callback* const read_callback) noexcept;
             };
         }
     }

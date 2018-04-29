@@ -8,8 +8,9 @@
 // -----------------------------------------------------------------------------
 // custom
 // -----------------------------------------------------------------------------
-// #include "def.h"
+#include "atb.common/logger.h"
 #include "atb.common/ip_address_v4.h"
+#include "read_callback.h"
 
 namespace atb {
     namespace network {
@@ -25,14 +26,34 @@ namespace atb {
             public:
 
                 // -------------------------------------------------------------
-                // Creates new instance of junction.
+                /// <summary>
+                /// Creates new instance of junction.
+                /// </summary>
                 // -------------------------------------------------------------
                 network_junction() noexcept;
 
                 // -------------------------------------------------------------
-                // Network junction dctor.
+                /// <summary>
+                /// Network junction dctor.
+                /// </summary>
                 // -------------------------------------------------------------
                 ~network_junction() noexcept;
+
+                // -------------------------------------------------------------
+                /// <summary>
+                /// Registers logger callback.
+                /// </summary>
+                // -------------------------------------------------------------
+                void register_logger_callback(
+                    atb::logger::logger* const logger) noexcept;
+
+                // -------------------------------------------------------------
+                /// <summary>
+                /// Registers handle read callback.
+                /// </summary>
+                // -------------------------------------------------------------
+                void register_read_handler(
+                    atb::network::junction::read_callback* const callback) noexcept;
 
                 // -------------------------------------------------------------
                 /// <summary>
@@ -55,10 +76,10 @@ namespace atb {
                 /// Set devices to which to connect to.
                 /// </summary>
                 /// <param name="remote">
-                /// pointer to array of ipv4 addresses to connect to.
+                /// Pointer to array of ipv4 addresses to connect to.
                 /// </param>
                 /// <param name="length">
-                /// number of ipv4 elements.
+                /// Number of ipv4 elements.
                 /// </param>
                 // -------------------------------------------------------------
                 void remote_devices(

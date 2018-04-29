@@ -28,7 +28,9 @@
 // -----------------------------------------------------------------------------
 struct atb::network::junction::network_junction::_network_junction_impl {
 
-    atb::queue::thread_safe_queue                           queue;
+    atb::logger::logger*                                    logger;
+    atb::network::junction::read_callback*                  read_callback;
+
     std::vector<atb::network::junction::network_client*>    clients;
 
     boost::asio::io_service                                 io_service;
@@ -56,6 +58,16 @@ atb::network::junction::network_junction::~network_junction() noexcept {
     impl = nullptr;
 }
 
+void atb::network::junction::network_junction::register_logger_callback(
+    atb::logger::logger* const logger) noexcept {
+    impl->logger = logger;
+}
+
+void atb::network::junction::network_junction::register_read_handler(
+    atb::network::junction::read_callback* const callback) noexcept {
+    impl->read_callback = callback;
+}
+
 bool atb::network::junction::network_junction::start() noexcept {
 
     bool success = true;
@@ -64,11 +76,11 @@ bool atb::network::junction::network_junction::start() noexcept {
 
         // TODO: Handle failed to allocate memory.
         atb::network::junction::network_client* cli = new (std::nothrow)
-            atb::network::junction::network_client(
+            atb::network::junction::network_client(impl->logger,
                 impl->io_service,
-                impl->remote_devices[client_count],
-                impl->queue
+                impl->remote_devices[client_count]
             );
+        cli->read_callback(impl->read_callback);
 
         success &= cli->start();
         impl->clients.push_back(cli);
