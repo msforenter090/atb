@@ -1,5 +1,12 @@
-#include <iostream>
+#include "gtest/gtest.h"
 
-int main() {
-    return 0;
+int main(int argc, char** argv) {
+    testing::InitGoogleTest(&argc, argv);
+    int result = RUN_ALL_TESTS();
+
+#ifdef _WIN32
+    system("pause");
+#endif
+
+    return result;
 }

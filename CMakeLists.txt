@@ -36,6 +36,28 @@ if(Boost_FOUND)
 endif(Boost_FOUND)
 
 #---------------------------------------
+# google test
+#---------------------------------------
+set(google_test "google.test")
+set(google_test_target "gtest")
+
+# google_test_build exists only to copy google test files to output include
+set(google_test_build "google.test.build")
+
+add_custom_target(${google_test_build})
+
+set(BUILD_GMOCK OFF CACHE BOOL "Builds the googlemock subproject" FORCE)
+set(BUILD_GTEST ON CACHE BOOL "Builds the googletest subproject" FORCE)
+add_subdirectory(${google_test})
+
+# copy include files into output include folder
+add_custom_command(TARGET ${google_test_build} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory 
+        ${CMAKE_CURRENT_SOURCE_DIR}/${google_test}/googletest/include/gtest
+        ${atb_library_include_path}/gtest/
+)
+
+#---------------------------------------
 # atb.common and test.atb.common
 #---------------------------------------
 set(atb_common_target "atb.common")
@@ -44,7 +66,7 @@ set(atb_common_test_target "test.atb.common")
 add_subdirectory(${atb_common_target})
 add_subdirectory(${atb_common_test_target})
 
-add_test(NAME ${atb_common_test_target} COMMAND ${atb_common_test_target})
+add_test(${atb_common_test_target} ${atb_library_binary_path}/${atb_common_test_target})
 
 #---------------------------------------
 # atb.networking
@@ -78,7 +100,8 @@ add_dependencies(${atb_target} ${atb_networking_target} ${atb_core_target})
 #---------------------------------------
 # Build order test
 #---------------------------------------
-add_dependencies(${atb_common_test_target} ${atb_common_target})
+add_dependencies(${google_test_build} ${google_test_target})
+add_dependencies(${atb_common_test_target} ${google_test_build} ${atb_common_target})
 
 #-------------------------------------------------------------------------------
 # Output for all targets
@@ -89,6 +112,8 @@ set_target_properties(
     ${atb_networking_target} ${atb_target}
 
     # test programs
+    ${google_test_build}
+    ${google_test_target}
     ${atb_common_test_target}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${atb_library_binary_path}
@@ -103,6 +128,8 @@ set_target_properties(
     ${atb_networking_target} ${atb_target}
 
     # test programs
+    ${google_test_build}
+    ${google_test_target}
     ${atb_common_test_target}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${atb_library_binary_path}
