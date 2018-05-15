@@ -3,7 +3,6 @@
 // -----------------------------------------------------------------------------
 // custom
 // -----------------------------------------------------------------------------
-#include "def.h"
 #include "logger.h"
 
 namespace atb {
@@ -12,7 +11,7 @@ namespace atb {
         const int network_message_length    = 12;
         const int internal_buffer_capacity  = 24;
 
-        class ATB_COMMON_API message_correction_machine {
+        class message_correction_machine {
 
         private:
             typedef char    byte;

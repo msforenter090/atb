@@ -48,6 +48,8 @@ add_custom_target(${google_test_build})
 
 set(BUILD_GMOCK OFF CACHE BOOL "Builds the googlemock subproject" FORCE)
 set(BUILD_GTEST ON CACHE BOOL "Builds the googletest subproject" FORCE)
+set(gtest_force_shared_crt ON CACHE BOOL
+    "Use shared (DLL) run-time lib even when Google Test is built as static lib.")
 add_subdirectory(${google_test})
 
 # copy include files into output include folder

@@ -9,8 +9,7 @@ message(STATUS "--------------------------------------------------------------")
 
 set(atb_common_target "atb.common")
 
-set(headers "include/def.h"
-            "include/logger.h"
+set(headers "include/logger.h"
             "include/ip_address_v4.h"
             "include/network_message.h"
             "include/thread_safe_queue.h"

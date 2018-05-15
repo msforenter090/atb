@@ -49,8 +49,8 @@ void atb::network::message_correction_machine::process() noexcept {
         matches = boost::regex_match(message, message_regex);
 
         if (!matches) {
-            std::cout << "Ecounter error: " << internal_buffer << std::endl;
             trim_internal_buffer_left(1);
+            matches = true;
             out_size = 0;
             continue;
         }
