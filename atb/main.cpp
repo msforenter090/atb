@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
     // Test spdlog on console.
     // ------------------------------------------------------------------------
 
-    char ip[] = "192.168.1.3";
+    char ip[] = "192.168.1.6";
     logger_impl log_impl;
     message_rcv mrcv;
 
@@ -73,18 +73,27 @@ int main(int argc, char** argv) {
     memcpy(add.ip_address, ip, atb::network::address::ip_address_presentation_length);
     add.port = 10001;
 
-    atb::network::junction::network_junction nj;
+    atb::network::junction::network_junction nj(&log_impl, &mrcv);
     nj.remote_devices(&add, 1);
-    nj.register_logger_callback(&log_impl);
 
-    nj.register_read_handler(&mrcv);
-    nj.start();
+    boost::thread_group th;
+    th.create_thread(boost::bind(
+        &atb::network::junction::network_junction::queue_for_work,
+        &nj)
+    );
+    th.create_thread(boost::bind(
+        &atb::network::junction::network_junction::queue_for_work,
+        &nj)
+    );
 
-    std::cout << "Main: " << boost::this_thread::get_id() << std::endl;
-    boost::this_thread::sleep_for(boost::chrono::milliseconds(1000));
+    nj.connect();
 
-    boost::this_thread::sleep_for(boost::chrono::milliseconds(40000));
-    nj.stop();
+    //std::cout << "Main: " << boost::this_thread::get_id() << std::endl;
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(90000));
+    nj.disconnect();
+
+    th.join_all();
+    system("pause");
 
     return 0;
 }

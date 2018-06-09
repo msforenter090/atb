@@ -10,7 +10,6 @@
 // -----------------------------------------------------------------------------
 #include <string.h>
 #include <cassert>
-#include <iostream>
 
 inline void atb::network::message_correction_machine::trim_internal_buffer_left(
     const unsigned int bytes) noexcept {

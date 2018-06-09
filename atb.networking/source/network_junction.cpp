@@ -28,29 +28,32 @@
 // -----------------------------------------------------------------------------
 struct atb::network::junction::network_junction::_network_junction_impl {
 
-    atb::logger::logger*                                    logger;
-    atb::network::junction::read_callback*                  read_callback;
+    atb::logger::logger*                                    logger_callback;
+    atb::network::junction::read_callback*                  reader_callback;
 
     std::vector<atb::network::junction::network_client*>    clients;
 
     boost::asio::io_service                                 io_service;
     boost::asio::io_service::work                           work;
-    boost::thread                                           dispatch_thread;
 
     std::unique_ptr<atb::network::address::ip_address_v4[]> remote_devices;
     unsigned int                                            remote_devices_no;
 
-    _network_junction_impl()
-        : work(io_service), dispatch_thread(
-            boost::bind(&boost::asio::io_service::run, &io_service)),
-        remote_devices_no(0) {
+    _network_junction_impl(
+        atb::logger::logger* const logger_callback,
+        atb::network::junction::read_callback* const reader_callback)
+        : logger_callback(logger_callback), reader_callback(reader_callback),
+            work(io_service), remote_devices_no(0) {
     }
 };
 
-atb::network::junction::network_junction::network_junction() noexcept
+atb::network::junction::network_junction::network_junction(
+    atb::logger::logger* const logger_callback,
+    atb::network::junction::read_callback* const reader_callback) noexcept
     : impl(nullptr) {
     impl = new (std::nothrow)
-        atb::network::junction::network_junction::network_junction_impl();
+        atb::network::junction::network_junction::network_junction_impl(
+            logger_callback, reader_callback);
 }
 
 atb::network::junction::network_junction::~network_junction() noexcept {
@@ -58,29 +61,21 @@ atb::network::junction::network_junction::~network_junction() noexcept {
     impl = nullptr;
 }
 
-void atb::network::junction::network_junction::register_logger_callback(
-    atb::logger::logger* const logger) noexcept {
-    impl->logger = logger;
+void atb::network::junction::network_junction::queue_for_work() noexcept {
+    impl->io_service.run();
 }
 
-void atb::network::junction::network_junction::register_read_handler(
-    atb::network::junction::read_callback* const callback) noexcept {
-    impl->read_callback = callback;
-}
-
-bool atb::network::junction::network_junction::start() noexcept {
-
+bool atb::network::junction::network_junction::connect() noexcept {
     bool success = true;
     for (unsigned int client_count = 0;
         client_count < impl->remote_devices_no; client_count++) {
 
         // TODO: Handle failed to allocate memory.
         atb::network::junction::network_client* cli = new (std::nothrow)
-            atb::network::junction::network_client(impl->logger,
-                impl->io_service,
+            atb::network::junction::network_client(impl->logger_callback,
+                impl->reader_callback, impl->io_service,
                 impl->remote_devices[client_count]
             );
-        cli->read_callback(impl->read_callback);
 
         success &= cli->start();
         impl->clients.push_back(cli);
@@ -88,16 +83,14 @@ bool atb::network::junction::network_junction::start() noexcept {
     return success;
 }
 
-bool atb::network::junction::network_junction::stop() noexcept {
-    impl->io_service.stop();
-    impl->dispatch_thread.join();
-
+bool atb::network::junction::network_junction::disconnect() noexcept {
     bool success = true;
+    impl->io_service.stop();
     for (auto client : impl->clients) {
         success &= client->stop();
         delete client;
     }
-
+    impl->io_service.reset();
     return success;
 }
 

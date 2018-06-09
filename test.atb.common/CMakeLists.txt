@@ -49,4 +49,3 @@ include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(${atb_common_test_target} ${Boost_LIBRARIES})
 message(STATUS "test.atb.common -> Boost include dir:    " ${Boost_INCLUDE_DIRS})
 message(STATUS "test.atb.common -> Boost Libraries dir:  " ${Boost_LIBRARIES})
-

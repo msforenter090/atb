@@ -2,6 +2,7 @@
 
 namespace atb {
     namespace logger {
+
         class logger {
 
         public:

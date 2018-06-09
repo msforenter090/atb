@@ -3,7 +3,7 @@
 // -----------------------------------------------------------------------------
 // boost
 // -----------------------------------------------------------------------------
-#include <boost/asio.hpp>
+// #include <boost/thread/thread.hpp>
 
 // -----------------------------------------------------------------------------
 // custom
@@ -30,7 +30,10 @@ namespace atb {
                 /// Creates new instance of junction.
                 /// </summary>
                 // -------------------------------------------------------------
-                network_junction() noexcept;
+                network_junction(
+                    atb::logger::logger* const logger_callback,
+                    atb::network::junction::read_callback* const reader_callback
+                ) noexcept;
 
                 // -------------------------------------------------------------
                 /// <summary>
@@ -41,19 +44,11 @@ namespace atb {
 
                 // -------------------------------------------------------------
                 /// <summary>
-                /// Registers logger callback.
+                /// Queue for work.
+                /// Adds the thread as a worker.
                 /// </summary>
                 // -------------------------------------------------------------
-                void register_logger_callback(
-                    atb::logger::logger* const logger) noexcept;
-
-                // -------------------------------------------------------------
-                /// <summary>
-                /// Registers handle read callback.
-                /// </summary>
-                // -------------------------------------------------------------
-                void register_read_handler(
-                    atb::network::junction::read_callback* const callback) noexcept;
+                void queue_for_work() noexcept;
 
                 // -------------------------------------------------------------
                 /// <summary>
@@ -61,7 +56,7 @@ namespace atb {
                 /// </summary>
                 /// <returns>Returns true if start was successful.</returns>
                 // -------------------------------------------------------------
-                bool start() noexcept;
+                bool connect() noexcept;
 
                 // -------------------------------------------------------------
                 /// <summary>
@@ -69,7 +64,7 @@ namespace atb {
                 /// </summary>
                 /// <returns>Returns true if stop was successful.</returns>
                 // -------------------------------------------------------------
-                bool stop() noexcept;
+                bool disconnect() noexcept;
 
                 // -------------------------------------------------------------
                 /// <summary>
