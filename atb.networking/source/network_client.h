@@ -39,11 +39,18 @@ namespace atb {
                 void handle_read(const boost::system::error_code& error) noexcept;
 
                 // -------------------------------------------------------------
-                // <summary>
-                // Post new try to connect action.
-                // </summary>
+                /// <summary>
+                /// Post new try to connect action.
+                /// </summary>
                 // -------------------------------------------------------------
                 void try_reconnect() noexcept;
+
+                // -------------------------------------------------------------
+                /// <summary>
+                /// Emits new message from remote device if conditions are met.
+                /// </summary>
+                // -------------------------------------------------------------
+                void post_new_message() noexcept;
 
             public:
 
@@ -59,17 +66,14 @@ namespace atb {
                 /// Starts listening for remote device.
                 /// </summary>
                 // -------------------------------------------------------------
-                bool start() noexcept;
+                bool connect() noexcept;
 
                 // -------------------------------------------------------------
                 /// <summary>
                 /// Stops listening for remote device and closes the connection.
                 /// </summary>
                 // -------------------------------------------------------------
-                bool stop() noexcept;
-
-                void read_callback(
-                    atb::network::junction::read_callback* const read_callback) noexcept;
+                bool disconnect() noexcept;
             };
         }
     }

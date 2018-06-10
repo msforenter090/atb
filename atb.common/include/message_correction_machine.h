@@ -19,6 +19,8 @@ namespace atb {
             byte            internal_buffer[internal_buffer_capacity];
             byte            out_buffer[network_message_length];
 
+            atb::logger::logger*    logger;
+
             // -----------------------------------------------------------------
             // delim is index betwean used and unused portion of the buffer.
             // delim indicates first unused buffer, on start it is zero(0).

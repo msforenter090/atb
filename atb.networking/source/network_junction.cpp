@@ -78,7 +78,7 @@ bool atb::network::junction::network_junction::connect() noexcept {
                 impl->remote_devices[client_count]
             );
 
-        success &= cli->start();
+        success &= cli->connect();
         impl->clients.push_back(cli);
     }
     return success;
@@ -87,11 +87,10 @@ bool atb::network::junction::network_junction::connect() noexcept {
 bool atb::network::junction::network_junction::disconnect() noexcept {
     bool success = true;
     for (auto client : impl->clients) {
-        success &= client->stop();
+        success &= client->disconnect();
         delete client;
     }
     impl->io_service.stop();
-    // impl->io_service.reset();
     return success;
 }
 

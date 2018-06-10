@@ -36,9 +36,6 @@ set_property(TARGET ${atb_networking_target} PROPERTY POSITION_INDEPENDENT_CODE 
 # boost
 #---------------------------------------
 include_directories(${Boost_INCLUDE_DIRS})
-target_link_libraries(${atb_networking_target} ${Boost_LIBRARIES})
-message(STATUS "atb.networking -> Boost include dir:    " ${Boost_INCLUDE_DIRS})
-message(STATUS "atb.networking -> Boost Libraries dir:  " ${Boost_LIBRARIES})
 
 #-------------------------------------------------------------------------------
 # Post build action

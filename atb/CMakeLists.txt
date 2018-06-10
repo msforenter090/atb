@@ -24,6 +24,20 @@ add_executable(${atb_target} ${sources} ${headers})
 # Dependencies
 #-------------------------------------------------------------------------------
 #---------------------------------------
+# atb.common
+#---------------------------------------
+get_platform_independent_static_library_name(atb_common_library "atb.common")
+set(atb_common_library ${atb_library_binary_path}/${atb_common_library})
+message(STATUS "atb -> atb.common library:  " ${atb_common_library})
+
+#---------------------------------------
+# atb.networking
+#---------------------------------------
+get_platform_independent_static_library_name(atb_networking_library "atb.networking")
+set(atb_networking_library ${atb_library_binary_path}/${atb_networking_library})
+message(STATUS "atb -> Networking library:  " ${atb_networking_library})
+
+#---------------------------------------
 # boost
 #---------------------------------------
 include_directories(${Boost_INCLUDE_DIRS})
@@ -31,18 +45,6 @@ message(STATUS "atb -> Boost include dir:   "      ${Boost_INCLUDE_DIRS})
 message(STATUS "atb -> Boost Libraries dir: "    ${Boost_LIBRARIES})
 
 #---------------------------------------
-# atb.networking
-#---------------------------------------
-get_platform_independent_static_library_name(atb_networking_library "atb.networking")
-
-set(atb_networking_library ${atb_library_binary_path}/${atb_networking_library})
-message(STATUS "atb -> Networking library:  " ${atb_networking_library})
-
-#---------------------------------------
 # set libraries
 #---------------------------------------
-target_link_libraries(${atb_target} ${atb_networking_library} ${Boost_LIBRARIES})
-
-#---------------------------------------
-# atb.common
-#---------------------------------------
+target_link_libraries(${atb_target} ${atb_networking_library} ${atb_common_library} ${Boost_LIBRARIES})

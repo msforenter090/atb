@@ -36,9 +36,6 @@ set_property(TARGET ${atb_common_target} PROPERTY POSITION_INDEPENDENT_CODE ON)
 # boost
 #---------------------------------------
 include_directories(${Boost_INCLUDE_DIRS})
-target_link_libraries(${atb_common_target} ${Boost_LIBRARIES})
-message(STATUS "atb.common -> Boost include dir:    " ${Boost_INCLUDE_DIRS})
-message(STATUS "atb.common -> Boost Libraries dir:  " ${Boost_LIBRARIES})
 
 #-------------------------------------------------------------------------------
 # Post build action
