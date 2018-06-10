@@ -67,6 +67,7 @@ void atb::network::junction::network_junction::queue_for_work() noexcept {
 
 bool atb::network::junction::network_junction::connect() noexcept {
     bool success = true;
+    impl->io_service.reset();
     for (unsigned int client_count = 0;
         client_count < impl->remote_devices_no; client_count++) {
 
@@ -85,12 +86,12 @@ bool atb::network::junction::network_junction::connect() noexcept {
 
 bool atb::network::junction::network_junction::disconnect() noexcept {
     bool success = true;
-    impl->io_service.stop();
     for (auto client : impl->clients) {
         success &= client->stop();
         delete client;
     }
-    impl->io_service.reset();
+    impl->io_service.stop();
+    // impl->io_service.reset();
     return success;
 }
 

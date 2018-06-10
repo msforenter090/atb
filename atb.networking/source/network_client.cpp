@@ -47,11 +47,15 @@ struct atb::network::junction::network_client::_network_client_impl {
 void atb::network::junction::network_client::handle_connect(
     const boost::system::error_code& error) noexcept {
 
+    if (error == boost::asio::error::operation_aborted)
+        return;
+
     // -------------------------------------------------------------------------
     // No errors, connect to device.
     // -------------------------------------------------------------------------
+    assert(impl != nullptr);
     if (!error) {
-        sprintf(log_line_buffer, "Connect to device: \"%s\"", impl->remote.ip_address);
+        sprintf(log_line_buffer, "Connected to device: \"%s\"", impl->remote.ip_address);
         impl->logger->info(log_line_buffer);
         boost::asio::async_read(impl->socket,
             boost::asio::buffer(impl->data, client_buffer_max_fill),
@@ -68,6 +72,9 @@ void atb::network::junction::network_client::handle_connect(
 
 void atb::network::junction::network_client::handle_read(
     const boost::system::error_code& error) noexcept {
+
+    if (error == boost::asio::error::operation_aborted)
+        return;
 
     assert(impl->read_callback != nullptr);
     impl->read_callback->handle(
@@ -123,6 +130,7 @@ bool atb::network::junction::network_client::stop() noexcept {
     // 
     // This should prevent handlers from beeing called after socket close.
     // -------------------------------------------------------------------------
+
     impl->socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, error);
     impl->socket.close();
     return true;

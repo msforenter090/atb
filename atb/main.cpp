@@ -61,9 +61,9 @@ public:
 };
 
 int main(int argc, char** argv) {
-    // ------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // Test spdlog on console.
-    // ------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     char ip[] = "192.168.1.6";
     logger_impl log_impl;
@@ -81,6 +81,7 @@ int main(int argc, char** argv) {
         &atb::network::junction::network_junction::queue_for_work,
         &nj)
     );
+
     th.create_thread(boost::bind(
         &atb::network::junction::network_junction::queue_for_work,
         &nj)
@@ -88,12 +89,15 @@ int main(int argc, char** argv) {
 
     nj.connect();
 
-    //std::cout << "Main: " << boost::this_thread::get_id() << std::endl;
-    boost::this_thread::sleep_for(boost::chrono::milliseconds(90000));
+    std::cout << "Main: " << boost::this_thread::get_id() << std::endl;
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(30000));
     nj.disconnect();
 
     th.join_all();
+
+#ifdef _WIN32
     system("pause");
+#endif
 
     return 0;
 }
