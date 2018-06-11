@@ -68,6 +68,13 @@ namespace atb {
 
                 // -------------------------------------------------------------
                 /// <summary>
+                /// Clears all resources taken by previous run.
+                /// </summary>
+                // -------------------------------------------------------------
+                bool clean() noexcept;
+
+                // -------------------------------------------------------------
+                /// <summary>
                 /// Set devices to which to connect to.
                 /// </summary>
                 /// <param name="remote">

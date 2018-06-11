@@ -33,8 +33,6 @@ struct atb::network::junction::network_client::_network_client_impl {
 
     boost::asio::ip::tcp::socket                        socket;
     char                                                data[client_buffer_capacity];
-
-    boost::mutex                                        lock;
     atb::network::message_correction_machine            mcm;
 
     _network_client_impl(
@@ -57,7 +55,6 @@ void atb::network::junction::network_client::handle_connect(
     // -------------------------------------------------------------------------
     // No errors, connect to device.
     // -------------------------------------------------------------------------
-    boost::lock_guard<boost::mutex> lock(impl->lock);
     assert(impl != nullptr);
     if (!error) {
         sprintf(log_line_buffer, "Connected to device: \"%s\"", impl->remote.ip_address);
@@ -81,7 +78,6 @@ void atb::network::junction::network_client::handle_read(
     if (error == boost::asio::error::operation_aborted)
         return;
 
-    boost::lock_guard<boost::mutex> lock(impl->lock);
     assert(impl->read_callback != nullptr);
     post_new_message();
 
@@ -142,9 +138,8 @@ bool atb::network::junction::network_client::disconnect() noexcept {
     // https://www.boost.org/doc/libs/1_66_0/doc/html/boost_asio/reference/basic_stream_socket/close/overload2.html
     // Even if the function indicates an error, the underlying descriptor is closed.
     // 
-    // This should prevent handlers from beeing called after socket close.
+    // This should prevent handlers from beeing after socket close.
     // -------------------------------------------------------------------------
-
     impl->socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, error);
     impl->socket.close();
     return true;

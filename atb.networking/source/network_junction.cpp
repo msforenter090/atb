@@ -57,6 +57,7 @@ atb::network::junction::network_junction::network_junction(
 }
 
 atb::network::junction::network_junction::~network_junction() noexcept {
+    clean();
     delete impl;
     impl = nullptr;
 }
@@ -86,12 +87,17 @@ bool atb::network::junction::network_junction::connect() noexcept {
 
 bool atb::network::junction::network_junction::disconnect() noexcept {
     bool success = true;
-    for (auto client : impl->clients) {
+    for (auto client : impl->clients)
         success &= client->disconnect();
-        delete client;
-    }
     impl->io_service.stop();
     return success;
+}
+
+bool atb::network::junction::network_junction::clean() noexcept {
+    for (auto client : impl->clients)
+        delete client;
+    impl->clients.clear();
+    return true;
 }
 
 void atb::network::junction::network_junction::remote_devices(

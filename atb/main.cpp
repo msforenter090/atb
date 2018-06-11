@@ -90,10 +90,12 @@ int main(int argc, char** argv) {
     nj.connect();
 
     std::cout << "Main: " << boost::this_thread::get_id() << std::endl;
-    boost::this_thread::sleep_for(boost::chrono::milliseconds(30000));
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(90000));
     nj.disconnect();
 
     th.join_all();
+
+    nj.clean();
 
 #ifdef _WIN32
     system("pause");
