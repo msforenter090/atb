@@ -10,8 +10,7 @@ message(STATUS "--------------------------------------------------------------")
 set(atb_core "atb.core")
 
 set(headers "")
-set(sources "source/def.h"
-            "source/example.cpp")
+set(sources "source/example.cpp")
 
 include_directories("include/")
 include_directories("source/")
