@@ -21,10 +21,11 @@ class message_rcv : public atb::network::junction::read_callback {
 public:
     void handle(atb::network::address::ip_address_v4 address,
                 void const* const data, const unsigned int length) {
-        char inter_buff[13];
-        memset(inter_buff, 0, 13);
-        memcpy(inter_buff, data, length);
-        std::cout << inter_buff << std::endl;
+        char* log_line = atb::logger::malloc_empty_log_line();
+        memset(log_line, 0, 13);
+        memcpy(log_line, data, length);
+        atb::logger::info(log_line);
+        atb::logger::free_log_line(log_line);
     }
 };
 
@@ -63,7 +64,6 @@ int main(int argc, char** argv) {
 
     nj.connect();
 
-    std::cout << "Main: " << boost::this_thread::get_id() << std::endl;
     boost::this_thread::sleep_for(boost::chrono::milliseconds(90000));
     nj.disconnect();
 
