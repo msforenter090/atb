@@ -51,7 +51,8 @@ void atb::network::junction::network_client::handle_connect(
     assert(impl != nullptr);
     if (!error) {
         char* log_line_buffer = atb::logger::malloc_empty_log_line();
-        sprintf(log_line_buffer, "Connected to device: \"%s\"", impl->remote.ip_address);
+        sprintf(log_line_buffer, "Connected to device: \"%s\"",
+                impl->remote.ip_address);
         atb::logger::info(log_line_buffer);
         atb::logger::free_log_line(log_line_buffer);
         boost::asio::async_read(impl->socket,
@@ -65,7 +66,7 @@ void atb::network::junction::network_client::handle_connect(
                 "Faild to connect to device: \"%s\". Queuing for re-connect.",
                 impl->remote.ip_address);
         atb::logger::info(log_line_buffer);
-        atb::logger::info(log_line_buffer);
+        atb::logger::free_log_line(log_line_buffer);
         try_reconnect();
     }
 }
