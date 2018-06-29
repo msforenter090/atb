@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # General
 #-------------------------------------------------------------------------------
-set(CMAKE_MIN_VERSION 3.9.0)
+set(CMAKE_MIN_VERSION 3.7.2)
 cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 
 cmake_policy(SET CMP0060 NEW)
@@ -13,7 +13,6 @@ get_binary_path(atb_library_binary_path)
 get_include_path(atb_library_include_path)
 
 set(BOOST_VERSION 1.62.0)
-include_directories(${atb_library_include_path})
 
 #-------------------------------------------------------------------------------
 # Project and Project dependencies
