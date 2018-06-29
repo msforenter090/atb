@@ -1,41 +1,57 @@
 #pragma once
 
+// ---------------------------------------------------------------------------------
+// Logging.
+// ---------------------------------------------------------------------------------
+#include "spdlog/spdlog.h"
+
 namespace atb {
-    namespace logger {
+
+    // -----------------------------------------------------------------------------
+    // Central logger hub.
+    // Switch for all log lines.
+    // -------------------------------------------------------------------------
+    class logger_hub {
+
+    private:
+        std::shared_ptr<spdlog::logger> console;
+
+    public:
+        logger_hub();
 
         // ---------------------------------------------------------------------
         // Debug callback.
         // ---------------------------------------------------------------------
-        extern void debug(const char* const message) noexcept;
+        void debug(const char* const message) noexcept;
 
         // ---------------------------------------------------------------------
         // Info callback.
         // ---------------------------------------------------------------------
-        extern void info(const char* const message) noexcept;
+        void info(const char* const message) noexcept;
 
         // ---------------------------------------------------------------------
         // Warning callback.
         // ---------------------------------------------------------------------
-        extern void warn(const char* const message) noexcept;
+        void warn(const char* const message) noexcept;
 
         // ---------------------------------------------------------------------
         // Error callback.
         // ---------------------------------------------------------------------
-        extern void error(const char* const message) noexcept;
+        void error(const char* const message) noexcept;
 
         // ---------------------------------------------------------------------
         // Fatal callback.
         // ---------------------------------------------------------------------
-        extern void fatal(const char* const message) noexcept;
+        void fatal(const char* const message) noexcept;
 
         // ---------------------------------------------------------------------
         // Reserves log line.
         // ---------------------------------------------------------------------
-        extern char* malloc_empty_log_line() noexcept;
+        char* malloc_empty_log_line() noexcept;
 
         // ---------------------------------------------------------------------
         // Returns log line.
         // ---------------------------------------------------------------------
-        extern void free_log_line(char* line) noexcept;
-    }
+        void free_log_line(char* line) noexcept;
+    };
 }

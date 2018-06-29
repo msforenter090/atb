@@ -3,15 +3,18 @@
 # ------------------------------------------------------------------------------
 cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 
-set(atb_target "atb")
-
-set(headers "")
-set(sources "main.cpp")
-include_directories(${atb_library_include_path})
-
 message(STATUS "--------------------------------------------------------------")
 message(STATUS "-                             atb                            -")
 message(STATUS "--------------------------------------------------------------")
+
+set(atb_target "atb")
+
+set(headers "include/logger_callback_implementation.h"
+            "include/logger_hub.h")
+set(sources "source/logger_hub.cpp"
+            "source/main.cpp")
+include_directories(${atb_library_include_path})
+include_directories("include/")
 
 # ------------------------------------------------------------------------------
 # Compiler options and target

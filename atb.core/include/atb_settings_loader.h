@@ -3,7 +3,6 @@
 // -----------------------------------------------------------------------------
 // custom
 // -----------------------------------------------------------------------------
-#include "atb.common/logger.h"
 #include "atb_settings.h"
 
 namespace atb {
@@ -17,7 +16,7 @@ namespace atb {
             /// If load fails for any reason nullptr is returned.
             /// </summary>
             // -----------------------------------------------------------------
-            atb_settings* load(atb::logger::logger* const logger,
+            atb_settings* load(
                 char const * const data, const int length) noexcept;
         };
     }

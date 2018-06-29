@@ -9,7 +9,6 @@
 // custom
 // -----------------------------------------------------------------------------
 #include "read_callback.h"
-#include "atb.common/logger.h"
 #include "atb.common/ip_address_v4.h"
 
 namespace atb {
@@ -54,10 +53,9 @@ namespace atb {
 
             public:
 
-                network_client(atb::logger::logger* logger,
-                    atb::network::junction::read_callback* read_callback,
-                    boost::asio::io_service& io_service,
-                    atb::network::address::ip_address_v4& remote) noexcept;
+                network_client(atb::network::junction::read_callback* read_callback,
+                               boost::asio::io_service& io_service,
+                               atb::network::address::ip_address_v4& remote) noexcept;
 
                 ~network_client() noexcept;
 

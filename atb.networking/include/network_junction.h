@@ -8,7 +8,6 @@
 // -----------------------------------------------------------------------------
 // custom
 // -----------------------------------------------------------------------------
-#include "atb.common/logger.h"
 #include "atb.common/ip_address_v4.h"
 #include "read_callback.h"
 
@@ -21,7 +20,7 @@ namespace atb {
                 typedef struct _network_junction_impl network_junction_impl;
 
             public:
-                network_junction_impl* impl;
+                network_junction_impl * impl;
 
             public:
 
@@ -31,7 +30,6 @@ namespace atb {
                 /// </summary>
                 // -------------------------------------------------------------
                 network_junction(
-                    atb::logger::logger* const logger_callback,
                     atb::network::junction::read_callback* const reader_callback
                 ) noexcept;
 
@@ -85,8 +83,8 @@ namespace atb {
                 /// </param>
                 // -------------------------------------------------------------
                 void remote_devices(
-                     atb::network::address::ip_address_v4 const * const remote,
-                     unsigned short length) noexcept;
+                    atb::network::address::ip_address_v4 const * const remote,
+                    unsigned short length) noexcept;
             };
         }
     }

@@ -27,8 +27,6 @@
 // PIMPL
 // -----------------------------------------------------------------------------
 struct atb::network::junction::network_junction::_network_junction_impl {
-
-    atb::logger::logger*                                    logger_callback;
     atb::network::junction::read_callback*                  reader_callback;
 
     std::vector<atb::network::junction::network_client*>    clients;
@@ -40,20 +38,19 @@ struct atb::network::junction::network_junction::_network_junction_impl {
     unsigned int                                            remote_devices_no;
 
     _network_junction_impl(
-        atb::logger::logger* const logger_callback,
         atb::network::junction::read_callback* const reader_callback)
-        : logger_callback(logger_callback), reader_callback(reader_callback),
-            work(io_service), remote_devices_no(0) {
+        : reader_callback(reader_callback),
+        work(io_service), remote_devices_no(0) {
     }
 };
 
 atb::network::junction::network_junction::network_junction(
-    atb::logger::logger* const logger_callback,
     atb::network::junction::read_callback* const reader_callback) noexcept
     : impl(nullptr) {
     impl = new (std::nothrow)
         atb::network::junction::network_junction::network_junction_impl(
-            logger_callback, reader_callback);
+            reader_callback
+        );
 }
 
 atb::network::junction::network_junction::~network_junction() noexcept {
@@ -70,11 +67,11 @@ bool atb::network::junction::network_junction::connect() noexcept {
     bool success = true;
     impl->io_service.reset();
     for (unsigned int client_count = 0;
-        client_count < impl->remote_devices_no; client_count++) {
+         client_count < impl->remote_devices_no; client_count++) {
 
         // TODO: Handle failed to allocate memory.
         atb::network::junction::network_client* cli = new (std::nothrow)
-            atb::network::junction::network_client(impl->logger_callback,
+            atb::network::junction::network_client(
                 impl->reader_callback, impl->io_service,
                 impl->remote_devices[client_count]
             );
@@ -110,7 +107,7 @@ void atb::network::junction::network_junction::remote_devices(
         return;
 
     std::memcpy(addresses, remote,
-        length * sizeof(atb::network::address::ip_address_v4));
+                length * sizeof(atb::network::address::ip_address_v4));
 
     impl->remote_devices.reset(addresses);
     impl->remote_devices_no = length;
