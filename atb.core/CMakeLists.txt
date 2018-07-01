@@ -11,7 +11,8 @@ set(atb_core "atb.core")
 
 set(headers "include/atb_settings_loader.h"
             "include/atb_settings.h"
-            "include/pipeline.h")
+            "include/pipeline.h"
+            "include/zone.h")
 set(sources "source/atb_settings_loader.cpp"
             "source/atb_settings.cpp"
             "source/mode_handler.h"
@@ -19,7 +20,8 @@ set(sources "source/atb_settings_loader.cpp"
             "source/mode_sync.cpp"
             "source/mode_wo.h"
             "source/mode_wo.cpp"
-            "source/pipeline.cpp")
+            "source/pipeline.cpp"
+            "source/zone.cpp")
 
 include_directories("include")
 include_directories("source")
