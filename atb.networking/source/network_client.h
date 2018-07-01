@@ -35,7 +35,8 @@ namespace atb {
                 // Called when there is something to read from input stream.
                 // </summary>
                 // -------------------------------------------------------------
-                void handle_read(const boost::system::error_code& error) noexcept;
+                void handle_read(const boost::system::error_code& error,
+                                 std::size_t bytes_transferred);
 
                 // -------------------------------------------------------------
                 /// <summary>

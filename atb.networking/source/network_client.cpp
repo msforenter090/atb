@@ -28,14 +28,18 @@ struct atb::network::junction::network_client::_network_client_impl {
     boost::asio::ip::tcp::socket                        socket;
     char                                                data[client_buffer_capacity];
     atb::network::message_correction_machine            mcm;
+    boost::asio::deadline_timer                         timer;
 
     _network_client_impl(
         atb::network::junction::read_callback* read_callback,
         boost::asio::io_service& io_service,
         atb::network::address::ip_address_v4 remote)
-        : read_callback(read_callback), remote(remote),
-        socket(io_service) {
+        : read_callback(read_callback), remote(remote), socket(io_service),
+        timer(io_service, boost::posix_time::seconds(1)) {
         memset(data, 0, client_buffer_capacity);
+
+        boost::asio::socket_base::keep_alive keep_alive_option(true);
+        socket.set_option(keep_alive_option);
     }
 };
 
@@ -58,7 +62,8 @@ void atb::network::junction::network_client::handle_connect(
         boost::asio::async_read(impl->socket,
                                 boost::asio::buffer(impl->data, client_buffer_max_fill),
                                 boost::bind(&network::junction::network_client::handle_read, this,
-                                            boost::asio::placeholders::error));
+                                            boost::asio::placeholders::error,
+                                            boost::asio::placeholders::bytes_transferred));
     }
     else {
         char* log_line_buffer = atb::logger::malloc_empty_log_line();
@@ -67,16 +72,33 @@ void atb::network::junction::network_client::handle_connect(
                 impl->remote.ip_address);
         atb::logger::info(log_line_buffer);
         atb::logger::free_log_line(log_line_buffer);
-        try_reconnect();
+
+        impl->timer.expires_from_now(boost::posix_time::seconds(1));
+        impl->timer.async_wait(boost::bind(&network_client::try_reconnect, this));
     }
 }
 
 void atb::network::junction::network_client::handle_read(
-    const boost::system::error_code& error) noexcept {
+    const boost::system::error_code& error, std::size_t bytes_transferred) {
 
     if (error == boost::asio::error::operation_aborted)
         return;
 
+    if ((boost::asio::error::eof == error) ||
+        (boost::asio::error::connection_reset == error) ||
+        (bytes_transferred != client_buffer_max_fill)) {
+        char* log_line_buffer = atb::logger::malloc_empty_log_line();
+        sprintf(log_line_buffer,
+                "Disconnected from device: \"%s\". Queuing for re-connect.",
+                impl->remote.ip_address);
+        atb::logger::info(log_line_buffer);
+        atb::logger::free_log_line(log_line_buffer);
+
+        impl->timer.expires_from_now(boost::posix_time::seconds(1));
+        impl->timer.async_wait(boost::bind(&network_client::try_reconnect, this));
+    }
+
+    assert(bytes_transferred == client_buffer_max_fill);
     assert(impl->read_callback != nullptr);
     post_new_message();
 
@@ -84,7 +106,8 @@ void atb::network::junction::network_client::handle_read(
     boost::asio::async_read(impl->socket,
                             boost::asio::buffer(impl->data, client_buffer_max_fill),
                             boost::bind(&network::junction::network_client::handle_read, this,
-                                        boost::asio::placeholders::error));
+                                        boost::asio::placeholders::error,
+                                        boost::asio::placeholders::bytes_transferred));
 }
 
 void atb::network::junction::network_client::try_reconnect() noexcept {
