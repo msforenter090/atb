@@ -16,8 +16,8 @@ namespace atb {
             /// If load fails for any reason nullptr is returned.
             /// </summary>
             // -----------------------------------------------------------------
-            atb_settings* load(
-                char const * const data, const int length) noexcept;
+            bool load(char const* const data, const int length,
+                      atb_settings& settings) noexcept;
         };
     }
 }

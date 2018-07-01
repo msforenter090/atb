@@ -16,8 +16,9 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
-atb::core::atb_settings* atb::core::atb_settings_loader::load(
-    char const * const data, const int length) noexcept {
+bool atb::core::atb_settings_loader::load(char const* const data,
+                                          const int length,
+                                          atb_settings& settings) noexcept {
 
     boost::property_tree::ptree config_root;
     //std::stringstream config_text(data, length);
@@ -27,5 +28,11 @@ atb::core::atb_settings* atb::core::atb_settings_loader::load(
     //catch (boost::property_tree::json_parser_error& exception) {
     //    // atb::logger::error("");
     //}
-    return nullptr;
+
+    // -------------------------------------------------------------------------
+    // for now provide single / default configuration
+    // -------------------------------------------------------------------------
+    settings.z_timeout = 30000; // 30s
+    settings.z_message_count = 3;
+    return true;
 }

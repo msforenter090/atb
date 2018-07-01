@@ -10,19 +10,26 @@ message(STATUS "--------------------------------------------------------------")
 set(atb_core "atb.core")
 
 set(headers "include/atb_settings_loader.h"
-            "include/atb_settings.h")
+            "include/atb_settings.h"
+            "include/pipeline.h")
 set(sources "source/atb_settings_loader.cpp"
-            "source/atb_settings.cpp")
+            "source/atb_settings.cpp"
+            "source/mode_handler.h"
+            "source/mode_sync.h"
+            "source/mode_sync.cpp"
+            "source/mode_wo.h"
+            "source/mode_wo.cpp"
+            "source/pipeline.cpp")
 
-include_directories("include/")
-include_directories("source/")
+include_directories("include")
+include_directories("source")
 get_include_path(bin_include_path)
 
 # ------------------------------------------------------------------------------
 # Compiler options and target
 # ------------------------------------------------------------------------------
 set(CMAKE_SKIP_RPATH ON)
-add_library(${atb_core} SHARED ${sources} ${headers})
+add_library(${atb_core} STATIC ${sources} ${headers})
 set_property(TARGET ${atb_core} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # ------------------------------------------------------------------------------

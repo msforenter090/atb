@@ -10,6 +10,8 @@
 // -----------------------------------------------------------------------------
 // custom
 // -----------------------------------------------------------------------------
+#include "atb.core/atb_settings_loader.h"
+#include "atb.core/pipeline.h"
 #include "atb.networking/network_junction.h"
 
 // -----------------------------------------------------------------------------
@@ -41,7 +43,22 @@ int main(int argc, char** argv) {
     atb::logger::info("/_/  |_/_/ /_____/  ");
     atb::logger::info("                    ");
 
-    char ip[] = "192.168.1.4";
+    atb::core::atb_settings settings;
+    atb::core::atb_settings_loader settings_loader;
+    settings_loader.load("", 0, settings);
+
+    boost::thread_group thread_group;
+
+    atb::core::pipeline pipeline(settings);
+    thread_group.create_thread(boost::bind(&atb::core::pipeline::queue_worker, &pipeline));
+
+    pipeline.start();
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(15000));
+    pipeline.stop();
+
+    thread_group.join_all();
+
+    /*char ip[] = "192.168.1.4";
     message_rcv mrcv;
 
     atb::network::address::ip_address_v4 add;
@@ -69,7 +86,7 @@ int main(int argc, char** argv) {
 
     th.join_all();
 
-    nj.clean();
+    nj.clean();*/
 
 #ifdef _WIN32
     system("pause");

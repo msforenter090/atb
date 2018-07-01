@@ -43,6 +43,14 @@ include_directories(${atb_library_include_path})
 message(STATUS "atb -> Networking library:  " ${atb_networking_library})
 
 # ---------------------------------------
+# atb.core
+# ---------------------------------------
+get_platform_independent_static_library_name(atb_core_library "atb.core")
+set(atb_networking_library ${atb_library_binary_path}/${atb_core_library})
+include_directories(${atb_library_include_path})
+message(STATUS "atb -> Core library:  " ${atb_core_library})
+
+# ---------------------------------------
 # boost
 # ---------------------------------------
 include_directories(${Boost_INCLUDE_DIRS})
