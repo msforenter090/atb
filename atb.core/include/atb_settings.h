@@ -42,25 +42,33 @@ namespace atb {
             // -----------------------------------------------------------------
             std::vector<zone> all_zones;
 
+            enum class work_mode s_mode;
+
         public:
-            atb_settings() noexcept;
+            atb_settings();
 
-            unsigned short zone_message_count() const noexcept;
+            unsigned short zone_message_count() const;
 
-            unsigned long zone_timeout() const noexcept;
+            unsigned long zone_timeout() const;
 
-            const zone& staging() const noexcept;
+            const zone& staging() const;
 
-            const zone& storage() const noexcept;
+            const zone& storage() const;
 
-            const zone& decommission() const noexcept;
+            const zone& decommission() const;
 
-            int zone_number() const noexcept;
+            int zone_number() const;
+
+            enum class work_mode mode() const;
 
             // -----------------------------------------------------------------
             // friend declaration
             // -----------------------------------------------------------------
             friend class atb_settings_loader;
+        };
+
+        enum class work_mode {
+            SYNC, WORK_ORDER
         };
     }
 }

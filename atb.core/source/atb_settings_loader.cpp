@@ -34,5 +34,6 @@ bool atb::core::atb_settings_loader::load(char const* const data,
     // -------------------------------------------------------------------------
     settings.z_timeout = 30000; // 30s
     settings.z_message_count = 3;
+    settings.s_mode = atb::core::work_mode::SYNC;
     return true;
 }

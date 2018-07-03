@@ -13,15 +13,20 @@ set(headers "include/atb_settings_loader.h"
             "include/atb_settings.h"
             "include/pipeline.h"
             "include/zone.h")
-set(sources "source/atb_settings_loader.cpp"
-            "source/atb_settings.cpp"
+set(sources "source/atb_settings.cpp"
+            "source/atb_settings_loader.cpp"
+            "source/constants.h"
+            "source/global_state.h"
             "source/mode_handler.h"
-            "source/mode_sync.h"
             "source/mode_sync.cpp"
-            "source/mode_wo.h"
+            "source/mode_sync.h"
             "source/mode_wo.cpp"
+            "source/mode_wo.h"
             "source/pipeline.cpp"
-            "source/zone.cpp")
+            "source/types.h"
+            "source/zone.cpp"
+            "source/zone_cashier.cpp"
+            "source/zone_cashier.h")
 
 include_directories("include")
 include_directories("source")

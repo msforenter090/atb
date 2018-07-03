@@ -10,7 +10,7 @@ message(STATUS "--------------------------------------------------------------")
 set(atb_target "atb")
 
 set(headers "include/application.h"
-            "include/logger_callback_implementation.h"
+            "include/logger_callback.h"
             "include/logger_hub.h")
 set(sources "source/application.cpp"
             "source/logger_hub.cpp"

@@ -10,7 +10,7 @@
 int main(int argc, char** argv) {
     atb::application application;
     application.start();
-    boost::this_thread::sleep_for(boost::chrono::milliseconds(600000));
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(6000));
     application.stop();
 #ifdef _WIN32
     system("pause");

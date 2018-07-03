@@ -38,8 +38,8 @@ struct atb::network::junction::network_client::_network_client_impl {
         timer(io_service, boost::posix_time::seconds(1)) {
         memset(data, 0, client_buffer_capacity);
 
-        boost::asio::socket_base::keep_alive keep_alive_option(true);
-        socket.set_option(keep_alive_option);
+        // boost::asio::socket_base::keep_alive keep_alive_option(true);
+        // socket.set_option(keep_alive_option);
     }
 };
 
@@ -54,11 +54,11 @@ void atb::network::junction::network_client::handle_connect(
     // -------------------------------------------------------------------------
     assert(impl != nullptr);
     if (!error) {
-        char* log_line_buffer = atb::logger::malloc_empty_log_line();
+        char* log_line_buffer = atb::common::malloc_empty_log_line();
         sprintf(log_line_buffer, "Connected to device: \"%s\"",
                 impl->remote.ip_address);
-        atb::logger::info(log_line_buffer);
-        atb::logger::free_log_line(log_line_buffer);
+        atb::common::info(log_line_buffer);
+        atb::common::free_log_line(log_line_buffer);
         boost::asio::async_read(impl->socket,
                                 boost::asio::buffer(impl->data, client_buffer_max_fill),
                                 boost::bind(&network::junction::network_client::handle_read, this,
@@ -66,12 +66,12 @@ void atb::network::junction::network_client::handle_connect(
                                             boost::asio::placeholders::bytes_transferred));
     }
     else {
-        char* log_line_buffer = atb::logger::malloc_empty_log_line();
+        char* log_line_buffer = atb::common::malloc_empty_log_line();
         sprintf(log_line_buffer,
                 "Faild to connect to device: \"%s\". Queuing for re-connect.",
                 impl->remote.ip_address);
-        atb::logger::info(log_line_buffer);
-        atb::logger::free_log_line(log_line_buffer);
+        atb::common::info(log_line_buffer);
+        atb::common::free_log_line(log_line_buffer);
 
         impl->timer.expires_from_now(boost::posix_time::seconds(1));
         impl->timer.async_wait(boost::bind(&network_client::try_reconnect, this));
@@ -87,12 +87,12 @@ void atb::network::junction::network_client::handle_read(
     if ((boost::asio::error::eof == error) ||
         (boost::asio::error::connection_reset == error) ||
         (bytes_transferred != client_buffer_max_fill)) {
-        char* log_line_buffer = atb::logger::malloc_empty_log_line();
+        char* log_line_buffer = atb::common::malloc_empty_log_line();
         sprintf(log_line_buffer,
                 "Disconnected from device: \"%s\". Queuing for re-connect.",
                 impl->remote.ip_address);
-        atb::logger::info(log_line_buffer);
-        atb::logger::free_log_line(log_line_buffer);
+        atb::common::info(log_line_buffer);
+        atb::common::free_log_line(log_line_buffer);
 
         impl->timer.expires_from_now(boost::posix_time::seconds(1));
         impl->timer.async_wait(boost::bind(&network_client::try_reconnect, this));

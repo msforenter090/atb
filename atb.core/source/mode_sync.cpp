@@ -10,9 +10,19 @@
 // -----------------------------------------------------------------------------
 #include "atb.common/logger.h"
 
+atb::core::mode_sync::mode_sync() : mode_handler() {
+}
+
+bool atb::core::mode_sync::setup() noexcept {
+    return true;
+}
+
 void atb::core::mode_sync::handle() {
-    char* log_line = atb::logger::malloc_empty_log_line();
-    sprintf(log_line, "Some Work.");
-    //atb::logger::info(log_line);
-    atb::logger::free_log_line(log_line);
+    atb::common::raii_log_line log_line;
+    //sprintf(log_line.ptr, "Some Work.");
+    //atb::common::info(log_line.ptr);
+}
+
+bool atb::core::mode_sync::cleanup() noexcept {
+    return true;
 }

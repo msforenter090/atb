@@ -14,7 +14,6 @@ namespace atb {
     namespace core {
 
         struct zone {
-        private:
             std::string z_location;
             std::string z_unknown_location;
 

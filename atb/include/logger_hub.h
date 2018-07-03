@@ -6,9 +6,10 @@
 #include <vector>
 
 // -----------------------------------------------------------------------------
-// Logging.
+// logging.
 // -----------------------------------------------------------------------------
 #include "spdlog/spdlog.h"
+#include "atb.common/logger.h"
 
 // -----------------------------------------------------------------------------
 // boost
@@ -18,7 +19,7 @@
 namespace atb {
 
     const short max_log_lines = 16;
-    const short log_line_length = 1024;
+    const int log_line_length = atb::common::max_log_line_length;
 
     // -------------------------------------------------------------------------
     // Central logger hub.
@@ -47,36 +48,36 @@ namespace atb {
         // ---------------------------------------------------------------------
         // Debug callback.
         // ---------------------------------------------------------------------
-        void debug(const char* const message) noexcept;
+        void debug(const char* const message);
 
         // ---------------------------------------------------------------------
         // Info callback.
         // ---------------------------------------------------------------------
-        void info(const char* const message) noexcept;
+        void info(const char* const message);
 
         // ---------------------------------------------------------------------
         // Warning callback.
         // ---------------------------------------------------------------------
-        void warn(const char* const message) noexcept;
+        void warn(const char* const message);
 
         // ---------------------------------------------------------------------
         // Error callback.
         // ---------------------------------------------------------------------
-        void error(const char* const message) noexcept;
+        void error(const char* const message);
 
         // ---------------------------------------------------------------------
         // Fatal callback.
         // ---------------------------------------------------------------------
-        void fatal(const char* const message) noexcept;
+        void fatal(const char* const message);
 
         // ---------------------------------------------------------------------
         // Reserves log line.
         // ---------------------------------------------------------------------
-        char* malloc_empty_log_line() noexcept;
+        char* malloc_empty_log_line();
 
         // ---------------------------------------------------------------------
         // Returns log line.
         // ---------------------------------------------------------------------
-        void free_log_line(char* line) noexcept;
+        void free_log_line(char* line);
     };
 }

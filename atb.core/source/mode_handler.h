@@ -10,7 +10,11 @@ namespace atb {
             virtual ~mode_handler() {
             };
 
+            virtual bool setup() noexcept = 0;
+
             virtual void handle() = 0;
+
+            virtual bool cleanup() noexcept = 0;
         };
     }
 }

@@ -29,14 +29,14 @@ namespace atb {
             /// Adds the thread as a worker.
             /// </summary>
             // -----------------------------------------------------------------
-            void queue_worker() noexcept;
+            void queue_worker();
 
             // -----------------------------------------------------------------
             /// <summary>
             /// Starts pipeline work (add handler).
             /// </summary>
             // -----------------------------------------------------------------
-            void start();
+            bool start();
 
             // -----------------------------------------------------------------
             /// <summary>
@@ -44,6 +44,14 @@ namespace atb {
             /// </summary>
             // -----------------------------------------------------------------
             void stop();
+
+            // -----------------------------------------------------------------
+            /// <summary>
+            /// Free allocated resources during run.
+            /// If called beore stop program will probably crash.
+            /// </summary>
+            // -----------------------------------------------------------------
+            bool cleanup();
         };
     }
 }
