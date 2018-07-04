@@ -23,6 +23,10 @@ const atb::core::zone& atb::core::atb_settings::decommission() const {
     return z_decommission;
 }
 
+const std::vector<atb::core::zone> atb::core::atb_settings::zones() const {
+    return all_zones;
+}
+
 int atb::core::atb_settings::zone_number() const {
     return all_zones.size();
 }

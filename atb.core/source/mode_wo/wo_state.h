@@ -3,23 +3,18 @@
 // -----------------------------------------------------------------------------
 // custom
 // -----------------------------------------------------------------------------
-#include "atb_settings.h"
+#include "global_state.h"
 
 namespace atb {
     namespace core {
-        class mode_handler {
-        public:
+        namespace wo {
             // -----------------------------------------------------------------
-            // virtual dctor is needed, we will access mode using base class
+            // WO state
             // -----------------------------------------------------------------
-            virtual ~mode_handler() {
-            };
-
-            virtual bool setup(const atb::core::atb_settings& settings) noexcept = 0;
-
-            virtual void handle() = 0;
-
-            virtual bool cleanup() noexcept = 0;
-        };
+            typedef struct _wo_state {
+                atb_settings settings;
+                tag_detection_state detection_state;
+            } wo_satate;
+        }
     }
 }

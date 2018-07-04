@@ -57,6 +57,8 @@ namespace atb {
 
             const zone& decommission() const;
 
+            const std::vector<zone> zones() const;
+
             int zone_number() const;
 
             enum class work_mode mode() const;

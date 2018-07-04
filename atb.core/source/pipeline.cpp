@@ -3,8 +3,8 @@
 // -----------------------------------------------------------------------------
 // custom
 // -----------------------------------------------------------------------------
-#include "mode_sync.h"
-#include "mode_wo.h"
+#include "mode_sync/mode_sync.h"
+#include "mode_wo/mode_wo.h"
 #include "atb.common/logger.h"
 
 // -----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ atb::core::pipeline::pipeline(atb::core::atb_settings settings) {
     // -------------------------------------------------------------------------
     // mode handler init and log
     // -------------------------------------------------------------------------
-    implementation->mode_h = new mode_sync();
+    implementation->mode_h = new atb::core::sync::mode_sync();
     atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
                              "Pipeline mode handler: 0x: %x", implementation->mode_h);
     atb::common::info(log_line.ptr);
@@ -114,7 +114,8 @@ void atb::core::pipeline::process_mode() {
     // TODO: pickup some stats
     // -------------------------------------------------------------------------
 
-    boost::this_thread::sleep_for(boost::chrono::milliseconds(60));
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(1000));
+
     // -------------------------------------------------------------------------
     // repost processing
     // -------------------------------------------------------------------------
@@ -132,7 +133,7 @@ bool atb::core::pipeline::start() {
     // -------------------------------------------------------------------------
     // initialize mode handler before processing starts
     // -------------------------------------------------------------------------
-    bool success = implementation->mode_h->setup();
+    bool success = implementation->mode_h->setup(implementation->settings);
     if (!success) {
         atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
                                  "Pipeline mode setup failed.");

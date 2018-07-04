@@ -18,15 +18,18 @@ set(sources "source/atb_settings.cpp"
             "source/constants.h"
             "source/global_state.h"
             "source/mode_handler.h"
-            "source/mode_sync.cpp"
-            "source/mode_sync.h"
-            "source/mode_wo.cpp"
-            "source/mode_wo.h"
             "source/pipeline.cpp"
-            "source/types.h"
+            "source/settings_filter.cpp"
+            "source/settings_filter.h"
             "source/zone.cpp"
             "source/zone_cashier.cpp"
-            "source/zone_cashier.h")
+            "source/zone_cashier.h"
+            "source/mode_sync/mode_sync.cpp"
+            "source/mode_sync/mode_sync.h"
+            "source/mode_sync/sync_state.h"
+            "source/mode_wo/mode_wo.cpp"
+            "source/mode_wo/mode_wo.h"
+            "source/mode_wo/wo_state.h")
 
 include_directories("include")
 include_directories("source")

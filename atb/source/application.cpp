@@ -143,7 +143,7 @@ void atb::application::start() {
     // setup and start network component
     // -------------------------------------------------------------------------
 
-    /*char ip[] = "192.168.1.4";
+    char ip[] = "192.168.1.4";
 
     atb::network::address::ip_address_v4 add;
     memcpy(add.ip_address, ip, atb::network::address::ip_address_presentation_length);
@@ -152,6 +152,10 @@ void atb::application::start() {
     implementation->network_junction = new (std::nothrow)
         atb::network::junction::network_junction(
             implementation->message_receiver);
+    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
+                             "Application network junction: 0x: %x",
+                             implementation->network_junction);
+    atb::common::info(log_line.ptr);
 
     assert(implementation->network_junction != nullptr);
     implementation->network_junction->remote_devices(&add, 1);
@@ -166,7 +170,10 @@ void atb::application::start() {
         implementation->network_junction)
     );
 
-    implementation->network_junction->connect();*/
+    implementation->network_junction->connect();
+    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
+                             "Application network junction started.");
+    atb::common::info(log_line.ptr);
 
     atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
                              "ATB start end.");
@@ -183,11 +190,24 @@ void atb::application::stop() {
     // -------------------------------------------------------------------------
     // stop and delete network component
     // -------------------------------------------------------------------------
-    /*implementation->network_junction->disconnect();
+    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
+                             "Application network junction: 0x: %x",
+                             implementation->network_junction);
+    atb::common::info(log_line.ptr);
+
+    implementation->network_junction->disconnect();
+    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
+                             "Application network junction desiconnected.");
+    atb::common::info(log_line.ptr);
+
     implementation->network_thread_group.join_all();
+    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
+                             "Application network junction threads joined.");
+    atb::common::info(log_line.ptr);
+
     implementation->network_junction->clean();
     delete implementation->network_junction;
-    implementation->network_junction = nullptr;*/
+    implementation->network_junction = nullptr;
 
     // -------------------------------------------------------------------------
     // stop and delete pipeline component

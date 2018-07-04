@@ -9,10 +9,23 @@
 // custom
 // -----------------------------------------------------------------------------
 #include "constants.h"
-#include "atb_settings.h"
+#include "settings_filter.h"
 
 namespace atb {
     namespace core {
+
+        // ---------------------------------------------------------------------
+        /// <summary>
+        /// File contains type definitions and state definitions for all modes.
+        /// </summary>
+        // ---------------------------------------------------------------------
+
+        // ---------------------------------------------------------------------
+        // single tag zone history cell
+        // ---------------------------------------------------------------------
+        typedef struct _tag_zone_history {
+            history_element history[atb::core::history_length];
+        } tag_zone_history;
 
         // ---------------------------------------------------------------------
         // common state
@@ -36,19 +49,5 @@ namespace atb {
             // -----------------------------------------------------------------
             // some current state variable.
         } tag_detection_state;
-
-        // ---------------------------------------------------------------------
-        // SYNC state
-        // ---------------------------------------------------------------------
-        typedef struct _sync_state {
-            tag_detection_state detection_satate;
-        } sync_satate;
-
-        // ---------------------------------------------------------------------
-        // WO state
-        // ---------------------------------------------------------------------
-        typedef struct _wo_state {
-            tag_detection_state detection_state;
-        } wo_satate;
     }
 }
