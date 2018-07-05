@@ -3,6 +3,8 @@
 // -----------------------------------------------------------------------------
 // custom
 // -----------------------------------------------------------------------------
+#include "atb.common/thread_safe_queue.h"
+#include "atb.core/message_parser.h"
 #include "atb.core/atb_settings_loader.h"
 
 // -----------------------------------------------------------------------------
@@ -11,13 +13,20 @@
 #include "logger_callback.h"
 
 class message_rcv : public atb::network::junction::read_callback {
+private:
+    atb::common::thread_safe_queue& queue;
+
 public:
+    message_rcv(atb::common::thread_safe_queue& queue) : queue(queue) {}
+
     void handle(atb::network::address::ip_address_v4 address,
-                void const* const data, const unsigned int length) {
-        //atb::common::raii_log_line log_line;
-        //memset(log_line.ptr, 0, 13);
-        //memcpy(log_line.ptr, data, length);
-        // atb::common::info(log_line.ptr);
+                const char* const data, const unsigned int length) {
+        atb::core::message_parser parser;
+        atb::common::network_message message;
+        parser.parse(data, message);
+
+        boost::lock_guard<boost::mutex> lock_guard(queue.lock);
+        queue.messages.push(message);
     }
 };
 
@@ -28,6 +37,7 @@ struct atb::application::_app_implementation {
     // -------------------------------------------------------------------------
     // common
     // -------------------------------------------------------------------------
+    atb::common::thread_safe_queue queue;
     message_rcv *message_receiver;
 
     // -------------------------------------------------------------------------
@@ -106,7 +116,8 @@ void atb::application::start() {
     // -------------------------------------------------------------------------
     // common
     // -------------------------------------------------------------------------
-    implementation->message_receiver = new (std::nothrow) message_rcv();
+    implementation->message_receiver = new (std::nothrow)
+        message_rcv(implementation->queue);
     atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
                              "Message receiver: 0x: %x",
                              implementation->message_receiver);
@@ -116,7 +127,8 @@ void atb::application::start() {
     // -------------------------------------------------------------------------
     // setup and start pipeline
     // -------------------------------------------------------------------------
-    implementation->pipeline = new (std::nothrow)atb::core::pipeline(settings);
+    implementation->pipeline = new (std::nothrow)atb::core::pipeline(settings,
+                                                                     &(implementation->queue));
     atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
                              "Application pipeline: 0x: %x",
                              implementation->pipeline);

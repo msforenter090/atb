@@ -4,6 +4,7 @@
 // custom
 // -----------------------------------------------------------------------------
 #include "atb_settings.h"
+#include "atb.common/thread_safe_queue.h"
 
 namespace atb {
     namespace core {
@@ -19,7 +20,8 @@ namespace atb {
             void process_mode();
 
         public:
-            pipeline(atb::core::atb_settings settings);
+            pipeline(atb::core::atb_settings settings,
+                     atb::common::thread_safe_queue* queue);
 
             ~pipeline();
 

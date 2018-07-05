@@ -4,6 +4,7 @@
 // custom
 // -----------------------------------------------------------------------------
 #include "atb_settings.h"
+#include "atb.common/thread_safe_queue.h"
 
 namespace atb {
     namespace core {
@@ -15,7 +16,8 @@ namespace atb {
             virtual ~mode_handler() {
             };
 
-            virtual bool setup(const atb::core::atb_settings& settings) noexcept = 0;
+            virtual bool setup(const atb::core::atb_settings& settings,
+                               atb::common::thread_safe_queue* queue) noexcept = 0;
 
             virtual void handle() = 0;
 

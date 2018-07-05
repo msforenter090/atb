@@ -20,7 +20,8 @@ namespace atb {
             ~mode_wo() {
             }
 
-            bool setup(const atb::core::atb_settings& settings) noexcept override;
+            bool setup(const atb::core::atb_settings& settings,
+                       atb::common::thread_safe_queue* queue) noexcept override;
 
             void handle() override;
 

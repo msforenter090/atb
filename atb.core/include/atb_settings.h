@@ -14,6 +14,10 @@
 namespace atb {
     namespace core {
 
+        enum work_mode {
+            SYNC, WORK_ORDER
+        };
+
         class atb_settings {
         private:
             // -----------------------------------------------------------------
@@ -42,7 +46,7 @@ namespace atb {
             // -----------------------------------------------------------------
             std::vector<zone> all_zones;
 
-            enum class work_mode s_mode;
+            enum work_mode s_mode;
 
         public:
             atb_settings();
@@ -61,16 +65,12 @@ namespace atb {
 
             int zone_number() const;
 
-            enum class work_mode mode() const;
+            work_mode mode() const;
 
             // -----------------------------------------------------------------
             // friend declaration
             // -----------------------------------------------------------------
             friend class atb_settings_loader;
-        };
-
-        enum class work_mode {
-            SYNC, WORK_ORDER
         };
     }
 }

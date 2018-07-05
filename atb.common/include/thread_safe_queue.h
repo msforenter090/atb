@@ -1,7 +1,14 @@
 #pragma once
 
-#include <mutex>
+// -----------------------------------------------------------------------------
+// std and boost
+// -----------------------------------------------------------------------------
+#include <boost/thread.hpp>
 #include <queue>
+
+// -----------------------------------------------------------------------------
+// custom
+// -----------------------------------------------------------------------------
 #include "network_message.h"
 
 // -----------------------------------------------------------------------------
@@ -10,10 +17,10 @@
 // -----------------------------------------------------------------------------
 
 namespace atb {
-    namespace queue {
+    namespace common {
         struct _thread_safe_queue {
-            std::mutex lock;
-            std::queue<atb::network::message::network_message> messages;
+            boost::mutex lock;
+            std::queue<atb::common::network_message> messages;
         };
 
         typedef struct _thread_safe_queue thread_safe_queue;

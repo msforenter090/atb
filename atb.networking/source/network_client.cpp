@@ -98,7 +98,7 @@ void atb::network::junction::network_client::handle_read(
         impl->timer.async_wait(boost::bind(&network_client::try_reconnect, this));
     }
 
-    assert(bytes_transferred == client_buffer_max_fill);
+    //assert(bytes_transferred == client_buffer_max_fill);
     assert(impl->read_callback != nullptr);
     post_new_message();
 
@@ -129,7 +129,7 @@ void atb::network::junction::network_client::post_new_message() noexcept {
 
     if (impl->mcm.length() > 0)
         impl->read_callback->handle(
-            impl->remote, impl->mcm.data(), impl->mcm.length()
+            impl->remote, (const char*)impl->mcm.data(), impl->mcm.length()
         );
 }
 

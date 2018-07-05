@@ -19,6 +19,7 @@
 struct atb::core::pipeline::_implementation {
     atb::core::atb_settings settings;
     atb::core::mode_handler* mode_h;
+    atb::common::thread_safe_queue* queue;
 
     // -------------------------------------------------------------------------
     // boost infrastructure
@@ -26,12 +27,14 @@ struct atb::core::pipeline::_implementation {
     boost::asio::io_service io_service;
     boost::asio::io_service::work work;
 
-    _implementation(atb::core::atb_settings& settings) : settings(settings),
-        mode_h(nullptr), io_service(), work(io_service) {
+    _implementation(atb::core::atb_settings& settings,
+                    atb::common::thread_safe_queue* queue) : settings(settings),
+        mode_h(nullptr), queue(queue), io_service(), work(io_service) {
     }
 };
 
-atb::core::pipeline::pipeline(atb::core::atb_settings settings) {
+atb::core::pipeline::pipeline(atb::core::atb_settings settings,
+                              atb::common::thread_safe_queue* queue) {
     atb::common::raii_log_line log_line;
 
     // -------------------------------------------------------------------------
@@ -42,7 +45,7 @@ atb::core::pipeline::pipeline(atb::core::atb_settings settings) {
                              "Pipeline ctor start.");
     atb::common::info(log_line.ptr);
 
-    implementation = new (std::nothrow) _implementation(settings);
+    implementation = new (std::nothrow) _implementation(settings, queue);
     atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
                              "Pipeline implementation: 0x: %x", implementation);
     atb::common::info(log_line.ptr);
@@ -133,7 +136,8 @@ bool atb::core::pipeline::start() {
     // -------------------------------------------------------------------------
     // initialize mode handler before processing starts
     // -------------------------------------------------------------------------
-    bool success = implementation->mode_h->setup(implementation->settings);
+    bool success = implementation->mode_h->setup(implementation->settings,
+                                                 implementation->queue);
     if (!success) {
         atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
                                  "Pipeline mode setup failed.");
@@ -150,6 +154,7 @@ bool atb::core::pipeline::start() {
     atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
                              "Pipeline start end.");
     atb::common::info(log_line.ptr);
+    return true;
 }
 
 void atb::core::pipeline::stop() {
