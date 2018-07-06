@@ -63,11 +63,11 @@ void atb::common::free_log_line(char* line) {
 // -----------------------------------------------------------------------------
 // Format log line.
 // -----------------------------------------------------------------------------
-void atb::common::format_line(char* line, int line_capacity, char* fmt, ...) {
+void atb::common::format_line(char* line, const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
 #ifdef _WIN32
-    vsprintf_s(line, line_capacity, fmt, args);
+    vsprintf_s(line, atb::common::max_log_line_length, fmt, args);
 #else
     vsprintf(line, fmt, args);
 #endif

@@ -46,7 +46,7 @@ namespace atb {
         // ---------------------------------------------------------------------
         // Format log line.
         // ---------------------------------------------------------------------
-        extern void format_line(char* line, int line_capacity, char* fmt, ...);
+        extern void format_line(char* line, const char* fmt, ...);
 
         class raii_log_line {
         public:

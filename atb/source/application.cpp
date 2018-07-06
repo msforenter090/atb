@@ -12,6 +12,8 @@
 // -----------------------------------------------------------------------------
 #include "logger_callback.h"
 
+using namespace atb::common;
+
 class message_rcv : public atb::network::junction::read_callback {
 private:
     atb::common::thread_safe_queue& queue;
@@ -64,37 +66,45 @@ struct atb::application::_app_implementation {
 };
 
 atb::application::application() {
-    atb::common::raii_log_line log_line;
+    raii_log_line log_line;
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "<<<<<<<<<<<<<<<<<<<<< START >>>>>>>>>>>>>>>>>>>>>",
-                             implementation);
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "<<<<<<<<<<<<<<<<<<<<< START >>>>>>>>>>>>>>>>>>>>>");
+    info(log_line.ptr);
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application ctor start.", implementation);
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application ctor start.", implementation);
+    info(log_line.ptr);
 
     implementation = new (std::nothrow) _app_implementation();
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application pimpl: 0x: %x", implementation);
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application pimpl: 0x: %x", implementation);
+    info(log_line.ptr);
     assert(implementation != nullptr);
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application ctor end.", implementation);
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application ctor end.", implementation);
+    info(log_line.ptr);
 }
 
 atb::application::~application() {
+    raii_log_line log_line;
+
+    format_line(log_line.ptr, "Application dctor start.");
+    info(log_line.ptr);
+
+    format_line(log_line.ptr, "Application pimpl: 0x: %x", implementation);
+    info(log_line.ptr);
+
     delete implementation;
     implementation = nullptr;
+
+    format_line(log_line.ptr, "Application dctor stop.");
+    info(log_line.ptr);
+
+    format_line(log_line.ptr, "<<<<<<<<<<<<<<<<<<<<<< END >>>>>>>>>>>>>>>>>>>>>>");
+    info(log_line.ptr);
 }
 
-void atb::application::start() {
-
+bool atb::application::start() {
     // -------------------------------------------------------------------------
-    // Test spdlog on console.
+    // print app logo
     // -------------------------------------------------------------------------
 
     atb::common::info("    ___  __________ ");
@@ -110,46 +120,37 @@ void atb::application::start() {
 
     bool success = true;
     atb::common::raii_log_line log_line;
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "ATB start start.");
-    atb::common::info(log_line.ptr);
+
+    format_line(log_line.ptr, "ATB start start.");
+    info(log_line.ptr);
+
     // -------------------------------------------------------------------------
     // common
     // -------------------------------------------------------------------------
-    implementation->message_receiver = new (std::nothrow)
-        message_rcv(implementation->queue);
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Message receiver: 0x: %x",
-                             implementation->message_receiver);
-    atb::common::info(log_line.ptr);
+    implementation->message_receiver = new (std::nothrow) message_rcv(implementation->queue);
+    format_line(log_line.ptr, "Message receiver: 0x: %x", implementation->message_receiver);
+    info(log_line.ptr);
     assert(implementation->message_receiver != nullptr);
 
     // -------------------------------------------------------------------------
     // setup and start pipeline
     // -------------------------------------------------------------------------
-    implementation->pipeline = new (std::nothrow)atb::core::pipeline(settings,
-                                                                     &(implementation->queue));
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application pipeline: 0x: %x",
-                             implementation->pipeline);
-    atb::common::info(log_line.ptr);
+    implementation->pipeline = new (std::nothrow)atb::core::pipeline(settings, &(implementation->queue));
+    format_line(log_line.ptr, "Application pipeline: 0x: %x", implementation->pipeline);
+    info(log_line.ptr);
     assert(implementation->pipeline != nullptr);
 
-    implementation->pipeline_thread_group.create_thread(boost::bind(
-        &atb::core::pipeline::queue_worker, implementation->pipeline));
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application pipeline thread launched.");
-    atb::common::info(log_line.ptr);
+    implementation->pipeline_thread_group.create_thread(boost::bind(&atb::core::pipeline::queue_worker, implementation->pipeline));
+    format_line(log_line.ptr, "Application pipeline thread launched.");
+    info(log_line.ptr);
     success = implementation->pipeline->start();
     if (!success) {
-        // ---------------------------------------------------------------------
-        // TODO: Handle fail.
-        // ---------------------------------------------------------------------
-        return;
+        format_line(log_line.ptr, "Application pipeline start failed.");
+        info(log_line.ptr);
+        return false;
     }
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application pipeline started.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application pipeline start success.");
+    info(log_line.ptr);
 
     // -------------------------------------------------------------------------
     // setup and start network component
@@ -161,12 +162,8 @@ void atb::application::start() {
     memcpy(add.ip_address, ip, atb::network::address::ip_address_presentation_length);
     add.port = 10001;
 
-    implementation->network_junction = new (std::nothrow)
-        atb::network::junction::network_junction(
-            implementation->message_receiver);
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application network junction: 0x: %x",
-                             implementation->network_junction);
+    implementation->network_junction = new (std::nothrow) atb::network::junction::network_junction(implementation->message_receiver);
+    format_line(log_line.ptr, "Application network junction: 0x: %x", implementation->network_junction);
     atb::common::info(log_line.ptr);
 
     assert(implementation->network_junction != nullptr);
@@ -183,89 +180,76 @@ void atb::application::start() {
     );
 
     implementation->network_junction->connect();
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application network junction started.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application network junction started.");
+    info(log_line.ptr);
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "ATB start end.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "ATB start end.");
+    info(log_line.ptr);
 }
 
 void atb::application::stop() {
-    atb::common::raii_log_line log_line;
+    raii_log_line log_line;
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application stop start",
-                             implementation->pipeline);
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application stop start", implementation->pipeline);
+    info(log_line.ptr);
+
     // -------------------------------------------------------------------------
     // stop and delete network component
     // -------------------------------------------------------------------------
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application network junction: 0x: %x",
-                             implementation->network_junction);
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application network junction: 0x: %x", implementation->network_junction);
+    info(log_line.ptr);
 
     implementation->network_junction->disconnect();
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application network junction desiconnected.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application network junction desiconnected.");
+    info(log_line.ptr);
 
     implementation->network_thread_group.join_all();
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application network junction threads joined.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application network junction threads joined.");
+    info(log_line.ptr);
 
-    implementation->network_junction->clean();
-    delete implementation->network_junction;
-    implementation->network_junction = nullptr;
+    if (implementation != nullptr && implementation->network_junction != nullptr) {
+        implementation->network_junction->clean();
+        delete implementation->network_junction;
+        implementation->network_junction = nullptr;
+    }
 
     // -------------------------------------------------------------------------
     // stop and delete pipeline component
     // -------------------------------------------------------------------------
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application Pipeline: 0x: %x",
-                             implementation->pipeline);
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application Pipeline: 0x: %x", implementation->pipeline);
+    info(log_line.ptr);
 
     implementation->pipeline->stop();
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application pipeline stopped.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application pipeline stopped.");
+    info(log_line.ptr);
 
     // blocking
     implementation->pipeline_thread_group.join_all();
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application pipeline thread joined.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application pipeline thread joined.");
+    info(log_line.ptr);
 
     implementation->pipeline->cleanup();
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application pipeline cleaned.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Application pipeline cleaned.");
+    info(log_line.ptr);
 
-    assert(implementation->pipeline != nullptr);
-    delete implementation->pipeline;
-    implementation->pipeline = nullptr;
+    if (implementation != nullptr && implementation->pipeline) {
+        delete implementation->pipeline;
+        implementation->pipeline = nullptr;
+    }
 
     // -------------------------------------------------------------------------
     // common
     // -------------------------------------------------------------------------
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application message receiver cleaned.");
-    atb::common::info(log_line.ptr);
-    assert(implementation->message_receiver);
-    delete implementation->message_receiver;
-    implementation->message_receiver = nullptr;
+    format_line(log_line.ptr, "Application message receiver cleaned.");
+    info(log_line.ptr);
+    if (implementation != nullptr && implementation->message_receiver != nullptr) {
+        delete implementation->message_receiver;
+        implementation->message_receiver = nullptr;
+    }
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Application stop end",
-                             implementation->pipeline);
+    format_line(log_line.ptr, "Application stop end", implementation->pipeline);
     atb::common::info(log_line.ptr);
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "<<<<<<<<<<<<<<<<<<<<<< END >>>>>>>>>>>>>>>>>>>>>>",
-                             implementation);
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "", implementation);
+    info(log_line.ptr);
 }

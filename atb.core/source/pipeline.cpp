@@ -16,10 +16,14 @@
 // -----------------------------------------------------------------------------
 // pimpl
 // -----------------------------------------------------------------------------
+
+using namespace atb::common;
+using namespace atb::core;
+
 struct atb::core::pipeline::_implementation {
-    atb::core::atb_settings settings;
-    atb::core::mode_handler* mode_h;
-    atb::common::thread_safe_queue* queue;
+    atb_settings settings;
+    mode_handler* mode_h;
+    thread_safe_queue* queue;
 
     // -------------------------------------------------------------------------
     // boost infrastructure
@@ -27,59 +31,52 @@ struct atb::core::pipeline::_implementation {
     boost::asio::io_service io_service;
     boost::asio::io_service::work work;
 
-    _implementation(atb::core::atb_settings& settings,
-                    atb::common::thread_safe_queue* queue) : settings(settings),
-        mode_h(nullptr), queue(queue), io_service(), work(io_service) {
+    _implementation(atb_settings& settings, thread_safe_queue* queue)
+        : settings(settings), mode_h(nullptr), queue(queue), io_service(),
+        work(io_service) {
     }
 };
 
 atb::core::pipeline::pipeline(atb::core::atb_settings settings,
                               atb::common::thread_safe_queue* queue) {
-    atb::common::raii_log_line log_line;
+    raii_log_line log_line;
 
     // -------------------------------------------------------------------------
     // pimpl container init and log
     // -------------------------------------------------------------------------
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Pipeline ctor start.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Pipeline ctor start.");
+    info(log_line.ptr);
 
     implementation = new (std::nothrow) _implementation(settings, queue);
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Pipeline implementation: 0x: %x", implementation);
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Pipeline implementation: 0x: %x", implementation);
+    info(log_line.ptr);
     assert(implementation != nullptr);
 
     // -------------------------------------------------------------------------
     // mode handler init and log
     // -------------------------------------------------------------------------
     implementation->mode_h = new atb::core::sync::mode_sync();
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Pipeline mode handler: 0x: %x", implementation->mode_h);
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Pipeline mode handler: 0x: %x", implementation->mode_h);
+    info(log_line.ptr);
     assert(implementation->mode_h != nullptr);
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Pipeline ctor end.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Pipeline ctor end.");
+    info(log_line.ptr);
 }
 
 atb::core::pipeline::~pipeline() {
-    char* log_line = atb::common::malloc_empty_log_line();
+    raii_log_line log_line;
 
-    atb::common::format_line(log_line, atb::common::max_log_line_length,
-                             "Pipeline dctor start.");
-    atb::common::info(log_line);
+    format_line(log_line.ptr, "Pipeline dctor start.");
+    info(log_line.ptr);
 
     // -------------------------------------------------------------------------
     // cleanup in reverse order from init steps
     // clean model handler and log
     // -------------------------------------------------------------------------
-    atb::common::format_line(log_line, atb::common::max_log_line_length,
-                             "Pipeline mode handler: 0x: %x",
-                             implementation->mode_h);
-    atb::common::info(log_line);
+    format_line(log_line.ptr, "Pipeline mode handler: 0x: %x", implementation->mode_h);
+    info(log_line.ptr);
     assert(implementation->mode_h != nullptr);
     delete implementation->mode_h;
     implementation->mode_h = nullptr;
@@ -87,18 +84,14 @@ atb::core::pipeline::~pipeline() {
     // -------------------------------------------------------------------------
     // mode handler clean and log
     // -------------------------------------------------------------------------
-    atb::common::format_line(log_line, atb::common::max_log_line_length,
-                             "Pipeline pimpl: 0x: %x", implementation);
-    atb::common::info(log_line);
+    format_line(log_line.ptr, "Pipeline pimpl: 0x: %x", implementation);
+    info(log_line.ptr);
     assert(implementation != nullptr);
     delete implementation;
     implementation = nullptr;
 
-    atb::common::format_line(log_line, atb::common::max_log_line_length,
-                             "Pipeline dctor end.");
-    atb::common::info(log_line);
-
-    atb::common::free_log_line(log_line);
+    format_line(log_line.ptr, "Pipeline dctor end.");
+    info(log_line.ptr);
 }
 
 void atb::core::pipeline::queue_worker() {
@@ -127,11 +120,10 @@ void atb::core::pipeline::process_mode() {
 }
 
 bool atb::core::pipeline::start() {
-    atb::common::raii_log_line log_line;
+    raii_log_line log_line;
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Pipeline start start.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Pipeline start start.");
+    info(log_line.ptr);
 
     // -------------------------------------------------------------------------
     // initialize mode handler before processing starts
@@ -139,9 +131,8 @@ bool atb::core::pipeline::start() {
     bool success = implementation->mode_h->setup(implementation->settings,
                                                  implementation->queue);
     if (!success) {
-        atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                                 "Pipeline mode setup failed.");
-        atb::common::error(log_line.ptr);
+        format_line(log_line.ptr, "Pipeline mode setup failed.");
+        error(log_line.ptr);
         return false;
     }
 
@@ -151,9 +142,8 @@ bool atb::core::pipeline::start() {
     implementation->io_service.post(
         boost::bind(&atb::core::pipeline::process_mode, this));
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Pipeline start end.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Pipeline start end.");
+    info(log_line.ptr);
     return true;
 }
 
@@ -162,25 +152,22 @@ void atb::core::pipeline::stop() {
 }
 
 bool atb::core::pipeline::cleanup() {
-    atb::common::raii_log_line log_line;
+    raii_log_line log_line;
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Pipeline cleanup start.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Pipeline cleanup start.");
+    info(log_line.ptr);
 
     bool success = implementation->mode_h->cleanup();
     if (!success) {
         // ---------------------------------------------------------------------
         // should not happen, but still
         // ---------------------------------------------------------------------
-        atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                                 "Pipeline module cleanup failed.");
-        atb::common::info(log_line.ptr);
+        format_line(log_line.ptr, "Pipeline module cleanup failed.");
+        info(log_line.ptr);
         return false;
     }
 
-    atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                             "Pipeline cleanup end.");
-    atb::common::info(log_line.ptr);
+    format_line(log_line.ptr, "Pipeline cleanup end.");
+    info(log_line.ptr);
     return true;
 }

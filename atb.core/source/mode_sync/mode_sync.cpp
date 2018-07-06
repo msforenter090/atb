@@ -10,11 +10,14 @@
 // -----------------------------------------------------------------------------
 #include "atb.common/logger.h"
 
+using namespace atb::common;
+using namespace atb::core;
+
 atb::core::sync::mode_sync::mode_sync() : mode_handler() {
 }
 
-bool atb::core::sync::mode_sync::setup(const atb::core::atb_settings& settings,
-                                       atb::common::thread_safe_queue* queue) noexcept {
+bool atb::core::sync::mode_sync::setup(const atb_settings& settings,
+                                       thread_safe_queue* queue) noexcept {
     // -------------------------------------------------------------------------
     // allocate and init memory
     // -------------------------------------------------------------------------
@@ -23,20 +26,19 @@ bool atb::core::sync::mode_sync::setup(const atb::core::atb_settings& settings,
 }
 
 void atb::core::sync::mode_sync::handle() {
-    std::queue<atb::common::network_message> messages;
+    std::queue<network_message> messages;
 
     {
         boost::lock_guard<boost::mutex> lock_guard(state.queue->lock);
         std::swap(state.queue->messages, messages);
     }
 
-    atb::common::raii_log_line log_line;
+    raii_log_line log_line;
     while (!messages.empty()) {
-        atb::common::network_message msg = messages.front();
+        network_message msg = messages.front();
         messages.pop();
-        atb::common::format_line(log_line.ptr, atb::common::max_log_line_length,
-                                 "Rcg: %s", msg.tag);
-        atb::common::info(log_line.ptr);
+        format_line(log_line.ptr, "Rcg: %s", msg.tag);
+        info(log_line.ptr);
     }
 }
 
