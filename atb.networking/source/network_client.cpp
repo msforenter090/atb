@@ -19,22 +19,24 @@
 const int client_buffer_capacity = 13;
 const int client_buffer_max_fill = 12;
 
-struct atb::network::junction::network_client::_network_client_impl {
+using namespace atb::common;
+using namespace atb::network;
 
-    atb::network::junction::read_callback*              read_callback;
+struct atb::network::network_client::_network_client_impl {
 
-    atb::network::address::ip_address_v4                remote;
+    atb::network::read_callback*                        read_callback;
+
+    atb::common::ip_address_v4                          remote;
 
     boost::asio::ip::tcp::socket                        socket;
     char                                                data[client_buffer_capacity];
-    atb::network::message_correction_machine            mcm;
+    atb::common::message_correction_machine             mcm;
     boost::asio::deadline_timer                         timer;
 
     _network_client_impl(
-        atb::network::junction::read_callback* read_callback,
+        atb::network::read_callback* read_callback,
         boost::asio::io_service& io_service,
-        atb::network::address::ip_address_v4 remote)
-        : read_callback(read_callback), remote(remote), socket(io_service),
+        atb::common::ip_address_v4 remote) : read_callback(read_callback), remote(remote), socket(io_service),
         timer(io_service, boost::posix_time::seconds(1)) {
         memset(data, 0, client_buffer_capacity);
 
@@ -43,7 +45,7 @@ struct atb::network::junction::network_client::_network_client_impl {
     }
 };
 
-void atb::network::junction::network_client::handle_connect(
+void atb::network::network_client::handle_connect(
     const boost::system::error_code& error) noexcept {
 
     if (error == boost::asio::error::operation_aborted)
@@ -53,32 +55,26 @@ void atb::network::junction::network_client::handle_connect(
     // No errors, connect to device.
     // -------------------------------------------------------------------------
     assert(impl != nullptr);
+    raii_log_line log_line;
     if (!error) {
-        char* log_line_buffer = atb::common::malloc_empty_log_line();
-        sprintf(log_line_buffer, "Connected to device: \"%s\"",
-                impl->remote.ip_address);
-        atb::common::info(log_line_buffer);
-        atb::common::free_log_line(log_line_buffer);
+        format_line(log_line.ptr, "Connected to device: \"%s\"", impl->remote.ip_address);
+        info(log_line.ptr);
         boost::asio::async_read(impl->socket,
                                 boost::asio::buffer(impl->data, client_buffer_max_fill),
-                                boost::bind(&network::junction::network_client::handle_read, this,
+                                boost::bind(&network::network_client::handle_read, this,
                                             boost::asio::placeholders::error,
                                             boost::asio::placeholders::bytes_transferred));
     }
     else {
-        char* log_line_buffer = atb::common::malloc_empty_log_line();
-        sprintf(log_line_buffer,
-                "Faild to connect to device: \"%s\". Queuing for re-connect.",
-                impl->remote.ip_address);
-        atb::common::info(log_line_buffer);
-        atb::common::free_log_line(log_line_buffer);
+        format_line(log_line.ptr, "Faild to connect to device: \"%s\". Queuing for re-connect.", impl->remote.ip_address);
+        info(log_line.ptr);
 
         impl->timer.expires_from_now(boost::posix_time::seconds(1));
         impl->timer.async_wait(boost::bind(&network_client::try_reconnect, this));
     }
 }
 
-void atb::network::junction::network_client::handle_read(
+void atb::network::network_client::handle_read(
     const boost::system::error_code& error, std::size_t bytes_transferred) {
 
     if (error == boost::asio::error::operation_aborted)
@@ -87,12 +83,9 @@ void atb::network::junction::network_client::handle_read(
     if ((boost::asio::error::eof == error) ||
         (boost::asio::error::connection_reset == error) ||
         (bytes_transferred != client_buffer_max_fill)) {
-        char* log_line_buffer = atb::common::malloc_empty_log_line();
-        sprintf(log_line_buffer,
-                "Disconnected from device: \"%s\". Queuing for re-connect.",
-                impl->remote.ip_address);
-        atb::common::info(log_line_buffer);
-        atb::common::free_log_line(log_line_buffer);
+        raii_log_line log_line;
+        format_line(log_line.ptr, "Disconnected from device: \"%s\". Queuing for re-connect.", impl->remote.ip_address);
+        info(log_line.ptr);
 
         impl->timer.expires_from_now(boost::posix_time::seconds(1));
         impl->timer.async_wait(boost::bind(&network_client::try_reconnect, this));
@@ -105,12 +98,12 @@ void atb::network::junction::network_client::handle_read(
     memset(impl->data, 0, client_buffer_capacity);
     boost::asio::async_read(impl->socket,
                             boost::asio::buffer(impl->data, client_buffer_max_fill),
-                            boost::bind(&network::junction::network_client::handle_read, this,
+                            boost::bind(&network::network_client::handle_read, this,
                                         boost::asio::placeholders::error,
                                         boost::asio::placeholders::bytes_transferred));
 }
 
-void atb::network::junction::network_client::try_reconnect() noexcept {
+void atb::network::network_client::try_reconnect() noexcept {
     // -------------------------------------------------------------------------
     // At this point ip address should be valid and no check will be performed.
     // -------------------------------------------------------------------------
@@ -123,7 +116,7 @@ void atb::network::junction::network_client::try_reconnect() noexcept {
                                            boost::asio::placeholders::error));
 }
 
-void atb::network::junction::network_client::post_new_message() noexcept {
+void atb::network::network_client::post_new_message() noexcept {
     impl->mcm.consume(impl->data, client_buffer_max_fill);
     impl->mcm.process();
 
@@ -133,25 +126,22 @@ void atb::network::junction::network_client::post_new_message() noexcept {
         );
 }
 
-atb::network::junction::network_client::network_client(
-    atb::network::junction::read_callback* read_callback,
-    boost::asio::io_service& io_service,
-    atb::network::address::ip_address_v4& remote) noexcept {
-    impl = new (std::nothrow)
-        atb::network::junction::network_client::network_client_impl(read_callback, io_service, remote);
+atb::network::network_client::network_client(atb::network::read_callback* read_callback,
+                                             boost::asio::io_service& io_service, ip_address_v4& remote) noexcept {
+    impl = new (std::nothrow) network_client::network_client_impl(read_callback, io_service, remote);
 }
 
-atb::network::junction::network_client::~network_client() noexcept {
+atb::network::network_client::~network_client() noexcept {
     delete impl;
     impl = nullptr;
 }
 
-bool atb::network::junction::network_client::connect() noexcept {
+bool atb::network::network_client::connect() noexcept {
     try_reconnect();
     return true;
 }
 
-bool atb::network::junction::network_client::disconnect() noexcept {
+bool atb::network::network_client::disconnect() noexcept {
     boost::system::error_code error;
 
     // -------------------------------------------------------------------------

@@ -13,79 +13,75 @@
 
 namespace atb {
     namespace network {
-        namespace junction {
-            class  network_junction {
+        class  network_junction {
 
-                struct _network_junction_impl;
-                typedef struct _network_junction_impl network_junction_impl;
+            struct _network_junction_impl;
+            typedef struct _network_junction_impl network_junction_impl;
 
-            public:
-                network_junction_impl * impl;
+        public:
+            network_junction_impl * impl;
 
-            public:
+        public:
 
-                // -------------------------------------------------------------
-                /// <summary>
-                /// Creates new instance of junction.
-                /// </summary>
-                // -------------------------------------------------------------
-                network_junction(
-                    atb::network::junction::read_callback* const reader_callback
-                ) noexcept;
+            // -----------------------------------------------------------------
+            /// <summary>
+            /// Creates new instance of junction.
+            /// </summary>
+            // -----------------------------------------------------------------
+            network_junction(atb::network::read_callback* const reader_callback) noexcept;
 
-                // -------------------------------------------------------------
-                /// <summary>
-                /// Network junction dctor.
-                /// </summary>
-                // -------------------------------------------------------------
-                ~network_junction() noexcept;
+            // -----------------------------------------------------------------
+            /// <summary>
+            /// Network junction dctor.
+            /// </summary>
+            // -----------------------------------------------------------------
+            ~network_junction() noexcept;
 
-                // -------------------------------------------------------------
-                /// <summary>
-                /// Queue for work.
-                /// Adds the thread as a worker.
-                /// </summary>
-                // -------------------------------------------------------------
-                void queue_for_work() noexcept;
+            // -----------------------------------------------------------------
+            /// <summary>
+            /// Queue for work.
+            /// Adds the thread as a worker.
+            /// </summary>
+            // -----------------------------------------------------------------
+            void queue_for_work() noexcept;
 
-                // -------------------------------------------------------------
-                /// <summary>
-                /// Connects to the remote device(s) and starts pumping messages.
-                /// </summary>
-                /// <returns>Returns true if start was successful.</returns>
-                // -------------------------------------------------------------
-                bool connect() noexcept;
+            // -----------------------------------------------------------------
+            /// <summary>
+            /// Connects to the remote device(s) and starts pumping messages.
+            /// </summary>
+            /// <returns>Returns true if start was successful.</returns>
+            // -----------------------------------------------------------------
+            bool connect() noexcept;
 
-                // -------------------------------------------------------------
-                /// <summary>
-                /// Disconnectform remote devices and stops pumping messages.
-                /// </summary>
-                /// <returns>Returns true if stop was successful.</returns>
-                // -------------------------------------------------------------
-                bool disconnect() noexcept;
+            // -----------------------------------------------------------------
+            /// <summary>
+            /// Disconnectform remote devices and stops pumping messages.
+            /// </summary>
+            /// <returns>Returns true if stop was successful.</returns>
+            // -----------------------------------------------------------------
+            bool disconnect() noexcept;
 
-                // -------------------------------------------------------------
-                /// <summary>
-                /// Clears all resources taken by previous run.
-                /// </summary>
-                // -------------------------------------------------------------
-                bool clean() noexcept;
+            // -----------------------------------------------------------------
+            /// <summary>
+            /// Clears all resources taken by previous run.
+            /// </summary>
+            // -----------------------------------------------------------------
+            bool clean() noexcept;
 
-                // -------------------------------------------------------------
-                /// <summary>
-                /// Set devices to which to connect to.
-                /// </summary>
-                /// <param name="remote">
-                /// Pointer to array of ipv4 addresses to connect to.
-                /// </param>
-                /// <param name="length">
-                /// Number of ipv4 elements.
-                /// </param>
-                // -------------------------------------------------------------
-                void remote_devices(
-                    atb::network::address::ip_address_v4 const * const remote,
-                    unsigned short length) noexcept;
-            };
-        }
+            // -----------------------------------------------------------------
+            /// <summary>
+            /// Set devices to which to connect to.
+            /// </summary>
+            /// <param name="remote">
+            /// Pointer to array of ipv4 addresses to connect to.
+            /// </param>
+            /// <param name="length">
+            /// Number of ipv4 elements.
+            /// </param>
+            // -----------------------------------------------------------------
+            void remote_devices(
+                atb::common::ip_address_v4 const * const remote,
+                unsigned short length) noexcept;
+        };
     }
 }

@@ -5,6 +5,8 @@
 // -----------------------------------------------------------------------------
 #include "atb.common/message_correction_machine.h"
 
+using namespace atb::common;
+
 namespace atb {
     namespace network {
 
@@ -35,92 +37,76 @@ namespace atb {
         }
 
         TEST_F(test_message_correction_machine, test_mcm_instantiation) {
-            atb::network::message_correction_machine mcm;
+            message_correction_machine mcm;
 
             assert(mcm.data() != nullptr);
             assert(mcm.length() == 0);
         }
 
         TEST_F(test_message_correction_machine, test_mcm_start_state) {
-            atb::network::message_correction_machine mcm;
+            message_correction_machine mcm;
 
-            mcm.consume(valid_input_1, atb::network::network_message_length);
+            mcm.consume(valid_input_1, network_message_length);
             EXPECT_EQ(mcm.length(), 0) << __FUNCTION__;
         }
 
         TEST_F(test_message_correction_machine,
-            test_process_multiple_valid_message) {
-            atb::network::message_correction_machine mcm;
+               test_process_multiple_valid_message) {
+            message_correction_machine mcm;
 
-            mcm.consume(valid_input_1, atb::network::network_message_length);
+            mcm.consume(valid_input_1, network_message_length);
             mcm.process();
 
-            EXPECT_EQ(mcm.length(), atb::network::network_message_length) 
-                << __FUNCTION__;
+            EXPECT_EQ(mcm.length(), network_message_length) << __FUNCTION__;
 
-            EXPECT_EQ(memcmp(mcm.data(), valid_input_1,
-                atb::network::network_message_length),
-                0) << __FUNCTION__;
+            EXPECT_EQ(memcmp(mcm.data(), valid_input_1, network_message_length), 0) << __FUNCTION__;
 
-            mcm.consume(valid_input_2, atb::network::network_message_length);
+            mcm.consume(valid_input_2, network_message_length);
             mcm.process();
 
-            EXPECT_EQ(mcm.length(), atb::network::network_message_length)
-                << __FUNCTION__;
-            EXPECT_EQ(memcmp(mcm.data(), valid_input_2,
-                atb::network::network_message_length),
-                0) << __FUNCTION__;
+            EXPECT_EQ(mcm.length(), network_message_length) << __FUNCTION__;
+            EXPECT_EQ(memcmp(mcm.data(), valid_input_2, network_message_length), 0) << __FUNCTION__;
 
-            mcm.consume(valid_input_3, atb::network::network_message_length);
+            mcm.consume(valid_input_3, network_message_length);
             mcm.process();
 
-            EXPECT_EQ(mcm.length(), atb::network::network_message_length)
-                << __FUNCTION__;
-            EXPECT_EQ(memcmp(mcm.data(), valid_input_3,
-                atb::network::network_message_length),
-                0) << __FUNCTION__;
+            EXPECT_EQ(mcm.length(), network_message_length) << __FUNCTION__;
+            EXPECT_EQ(memcmp(mcm.data(), valid_input_3, network_message_length), 0) << __FUNCTION__;
         }
 
         TEST_F(test_message_correction_machine,
-            test_process_multiple_mixed_message_start_valid) {
-            atb::network::message_correction_machine mcm;
+               test_process_multiple_mixed_message_start_valid) {
+            message_correction_machine mcm;
 
-            mcm.consume(valid_input_1, atb::network::network_message_length);
+            mcm.consume(valid_input_1, network_message_length);
             mcm.process();
 
-            EXPECT_EQ(mcm.length(), atb::network::network_message_length)
-                << __FUNCTION__;
-            EXPECT_EQ(memcmp(mcm.data(), valid_input_1,
-                atb::network::network_message_length),
-                0) << __FUNCTION__;
+            EXPECT_EQ(mcm.length(), network_message_length) << __FUNCTION__;
+            EXPECT_EQ(memcmp(mcm.data(), valid_input_1, network_message_length), 0) << __FUNCTION__;
 
-            mcm.consume(invalid_input_1, atb::network::network_message_length);
+            mcm.consume(invalid_input_1, network_message_length);
             mcm.process();
 
             EXPECT_EQ(mcm.length(), 0) << __FUNCTION__;
-            EXPECT_EQ(memcmp(mcm.data(), valid_input_1,
-                atb::network::network_message_length),
-                0) << __FUNCTION__;
+            EXPECT_EQ(memcmp(mcm.data(), valid_input_1, network_message_length), 0) << __FUNCTION__;
 
-            mcm.consume(invalid_input_2, atb::network::network_message_length);
+            mcm.consume(invalid_input_2, network_message_length);
             mcm.process();
 
-            EXPECT_EQ(mcm.length(), atb::network::network_message_length) << __FUNCTION__;
-            EXPECT_EQ(memcmp(mcm.data(), valid_input_1_comb_2,
-                atb::network::network_message_length),
-                0) << __FUNCTION__;
+            EXPECT_EQ(mcm.length(), network_message_length) << __FUNCTION__;
+            EXPECT_EQ(memcmp(mcm.data(), valid_input_1_comb_2, network_message_length), 0) << __FUNCTION__;
         }
 
         TEST_F(test_message_correction_machine, test_process_multiple_invalid) {
-            atb::network::message_correction_machine mcm;
+            message_correction_machine mcm;
 
-            mcm.consume(invalid_input_1, atb::network::network_message_length);
+            mcm.consume(invalid_input_1, network_message_length);
             mcm.process();
 
-            mcm.consume(invalid_input_1, atb::network::network_message_length);
+            mcm.consume(invalid_input_1, network_message_length);
             mcm.process();
 
-            mcm.consume(invalid_input_1, atb::network::network_message_length);
+            mcm.consume(invalid_input_1, network_message_length);
             mcm.process();
 
             EXPECT_EQ(mcm.length(), 0);

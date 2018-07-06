@@ -13,16 +13,16 @@
 #include "logger_callback.h"
 
 using namespace atb::common;
+using namespace atb::network;
 
-class message_rcv : public atb::network::junction::read_callback {
+class message_rcv : public atb::network::read_callback {
 private:
-    atb::common::thread_safe_queue& queue;
+    thread_safe_queue & queue;
 
 public:
     message_rcv(atb::common::thread_safe_queue& queue) : queue(queue) {}
 
-    void handle(atb::network::address::ip_address_v4 address,
-                const char* const data, const unsigned int length) {
+    void handle(atb::common::ip_address_v4 address, char const* const data, const unsigned int length) override {
         atb::core::message_parser parser;
         atb::common::network_message message;
         parser.parse(data, message);
@@ -52,7 +52,7 @@ struct atb::application::_app_implementation {
     // network connection to remote devices
     // -------------------------------------------------------------------------
     boost::thread_group network_thread_group;
-    atb::network::junction::network_junction *network_junction;
+    atb::network::network_junction *network_junction;
 
     _app_implementation() : message_receiver(nullptr), pipeline(nullptr),
         network_junction(nullptr) {
@@ -158,25 +158,23 @@ bool atb::application::start() {
 
     char ip[] = "192.168.1.4";
 
-    atb::network::address::ip_address_v4 add;
-    memcpy(add.ip_address, ip, atb::network::address::ip_address_presentation_length);
+    ip_address_v4 add;
+    memcpy(add.ip_address, ip, ip_address_presentation_length);
     add.port = 10001;
 
-    implementation->network_junction = new (std::nothrow) atb::network::junction::network_junction(implementation->message_receiver);
+    implementation->network_junction = new (std::nothrow) network_junction(implementation->message_receiver);
     format_line(log_line.ptr, "Application network junction: 0x: %x", implementation->network_junction);
-    atb::common::info(log_line.ptr);
+    info(log_line.ptr);
 
     assert(implementation->network_junction != nullptr);
     implementation->network_junction->remote_devices(&add, 1);
 
     implementation->network_thread_group.create_thread(boost::bind(
-        &atb::network::junction::network_junction::queue_for_work,
-        implementation->network_junction)
+        &atb::network::network_junction::queue_for_work, implementation->network_junction)
     );
 
     implementation->network_thread_group.create_thread(boost::bind(
-        &atb::network::junction::network_junction::queue_for_work,
-        implementation->network_junction)
+        &atb::network::network_junction::queue_for_work, implementation->network_junction)
     );
 
     implementation->network_junction->connect();

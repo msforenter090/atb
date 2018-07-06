@@ -6,7 +6,7 @@
 #include "logger.h"
 
 namespace atb {
-    namespace network {
+    namespace common {
 
         const int network_message_length    = 12;
         const int internal_buffer_capacity  = 24;
