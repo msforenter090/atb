@@ -3,8 +3,8 @@
 #include "gtest/gtest.h"
 
 namespace atb {
-    namespace common {
-        class test_message_correction_machine : public ::testing::Test {
+    namespace core {
+        class test_zone_cashier : public ::testing::Test {
         protected:
             void SetUp() override;
             void TearDown() override;

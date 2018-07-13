@@ -8,7 +8,7 @@
 using namespace atb::common;
 
 namespace atb {
-    namespace network {
+    namespace common {
 
         // ---------------------------------------------------------------------
         // valud input

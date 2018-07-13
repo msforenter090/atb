@@ -76,10 +76,15 @@ set(atb_networking_target "atb.networking")
 add_subdirectory(${atb_networking_target})
 
 # --------------------------------------
-# atb.core
+# atb.core and test.atb.core
 # --------------------------------------
 set(atb_core_target "atb.core")
+set(atb_core_test_target "test.atb.core")
+
 add_subdirectory(${atb_core_target})
+add_subdirectory(${atb_core_test_target})
+
+add_test(${atb_core_test_target} ${atb_library_binary_path}/${atb_core_test_target})
 
 # --------------------------------------
 # atb

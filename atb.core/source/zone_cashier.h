@@ -1,24 +1,28 @@
 #pragma once
 
 // -----------------------------------------------------------------------------
+// custom
+// -----------------------------------------------------------------------------
+#include "constants.h"
+
+
+// -----------------------------------------------------------------------------
 // std
 // -----------------------------------------------------------------------------
 #include <vector>
 
-// -----------------------------------------------------------------------------
-// custom
-// -----------------------------------------------------------------------------
-#include "zone.h"
-
 namespace atb {
     namespace core {
+        typedef struct _zone_ip_address {
+            char zone_ip_address[ip_address_bytes];
+        } zone_ip_address;
 
         // ---------------------------------------------------------------------
         // used to hold and cache zones.
         // ---------------------------------------------------------------------
         class zone_cashier {
         private:
-            std::vector<atb::core::zone> cashier;
+            std::vector<zone_ip_address> cashier;
 
         public:
             // -----------------------------------------------------------------
@@ -28,7 +32,7 @@ namespace atb {
             /// Returns cache if the entry exists.
             /// </summary>
             // -----------------------------------------------------------------
-            int cache(atb::core::zone& element);
+            int cache(zone_ip_address& element);
 
             // -----------------------------------------------------------------
             /// <summary>
@@ -36,7 +40,7 @@ namespace atb {
             /// If the cache does not exists calls abort.
             /// </summary>
             // -----------------------------------------------------------------
-            const atb::core::zone& cache(const int cached) const;
+            const zone_ip_address& cache(const int cached) const;
 
             // -----------------------------------------------------------------
             /// <summary>

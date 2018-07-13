@@ -16,8 +16,7 @@ using namespace atb::core;
 atb::core::sync::mode_sync::mode_sync() : mode_handler() {
 }
 
-bool atb::core::sync::mode_sync::setup(const atb_settings& settings,
-                                       thread_safe_queue* queue) noexcept {
+bool atb::core::sync::mode_sync::setup(const atb_settings& settings, thread_safe_queue* queue) noexcept {
     // -------------------------------------------------------------------------
     // allocate and init memory
     // -------------------------------------------------------------------------
@@ -37,7 +36,7 @@ void atb::core::sync::mode_sync::handle() {
     while (!messages.empty()) {
         network_message msg = messages.front();
         messages.pop();
-        format_line(log_line.ptr, "Rcg: %s", msg.tag);
+        format_line(log_line.ptr, "Rcg: %s\0", msg.tag);
         info(log_line.ptr);
     }
 }

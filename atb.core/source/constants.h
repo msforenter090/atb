@@ -16,5 +16,16 @@ namespace atb {
         // single element in history, 0-255                         (variable)
         // ---------------------------------------------------------------------
         typedef unsigned char history_element;
+
+        // ---------------------------------------------------------------------
+        // tag length in bytes
+        // ---------------------------------------------------------------------
+        const short tag_length = 6;
+
+        // ---------------------------------------------------------------------
+        // number of bytes for single ip address in string form
+        // 16th is the null terminator
+        // ---------------------------------------------------------------------
+        const short ip_address_bytes = 16;
     }
 }
