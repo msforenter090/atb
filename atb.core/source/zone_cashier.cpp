@@ -9,7 +9,6 @@
 // std
 // -----------------------------------------------------------------------------
 #include <cassert>
-#include <string.h>
 
 int atb::core::zone_cashier::cache(zone_ip_address& element) {
     const int ip_length = ip_address_bytes;
