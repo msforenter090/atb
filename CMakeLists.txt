@@ -108,6 +108,7 @@ add_dependencies(${atb_target} ${atb_networking_target} ${atb_core_target})
 # --------------------------------------
 add_dependencies(${google_test_build} ${google_test_target})
 add_dependencies(${atb_common_test_target} ${google_test_build} ${atb_common_target})
+add_dependencies(${atb_core_test_target} ${google_test_build} ${atb_core_target})
 
 # ------------------------------------------------------------------------------
 # Output for all targets
@@ -121,6 +122,7 @@ set_target_properties(
     ${google_test_build}
     ${google_test_target}
     ${atb_common_test_target}
+    ${atb_core_test_target}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${atb_library_binary_path}
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${atb_library_binary_path}

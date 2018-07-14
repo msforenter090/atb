@@ -9,12 +9,13 @@
 // std
 // -----------------------------------------------------------------------------
 #include <cassert>
+#include <string.h>
 
 int atb::core::zone_cashier::cache(zone_ip_address& element) {
     const int ip_length = ip_address_bytes;
     for (int i = 0; i < cashier.size(); i++) {
         zone_ip_address& entry = cashier.at(i);
-        if (memcpy(entry.zone_ip_address, element.zone_ip_address, ip_length) == 0)
+        if (memcmp(entry.zone_ip_address, element.zone_ip_address, ip_length) == 0)
             return i;
     }
 

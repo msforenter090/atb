@@ -15,10 +15,10 @@ set(headers "include/atb_settings_loader.h"
             "include/pipeline.h"
             "include/zone.h"
             "include/zone_cashier.h"
-            "include/tag_cashier.h")
+            "include/tag_cashier.h"
+            "include/constants.h")
 set(sources "source/atb_settings.cpp"
             "source/atb_settings_loader.cpp"
-            "source/constants.h"
             "source/global_state.h"
             "source/message_parser.cpp"
             "source/mode_handler.h"
