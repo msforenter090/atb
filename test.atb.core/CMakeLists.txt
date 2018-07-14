@@ -5,8 +5,10 @@ cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 
 set(atb_core_test_target "test.atb.core")
 
-set(headers "include/test_zone_cashier.h")
+set(headers "include/test_zone_cashier.h"
+            "include/test_tag_cashier.h")
 set(sources "source/test_zone_cashier.cpp"
+            "source/test_tag_cashier.cpp"
             "source/main.cpp")
 
 include_directories("include/")

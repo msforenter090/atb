@@ -1,24 +1,14 @@
 #include "tag_cashier.h"
 
 // -----------------------------------------------------------------------------
-// custon
-// -----------------------------------------------------------------------------
-#include "atb.common/logger.h"
-
-// -----------------------------------------------------------------------------
 // std
 // -----------------------------------------------------------------------------
 #include <new>
 #include <string.h>
 #include <cassert>
 
-using namespace atb::common;
-
 atb::core::tag_cashier::tag_cashier() : max_tags(atb::core::max_tag_count), current_position(0) {
     cached_tags = new (std::nothrow) tag[max_tags];
-
-    raii_log_line log_line;
-    // TODO: Log
 }
 
 atb::core::tag_cashier::~tag_cashier() {
@@ -44,7 +34,8 @@ int atb::core::tag_cashier::cache(const atb::core::tag& element) {
 
     memcpy(cached_tags[current_position].value, element.value, tag_length);
     current_position++;
-    return current_position--;
+
+    return current_position - 1;
 }
 
 const atb::core::tag& atb::core::tag_cashier::cache(const int cached) const {
@@ -53,11 +44,11 @@ const atb::core::tag& atb::core::tag_cashier::cache(const int cached) const {
 }
 
 void atb::core::tag_cashier::uncache(const int cached) {
-    for (int i = cached + 1; i < current_position - 1; i++)
-        memcpy(static_cast<void*>(cached_tags + i - 1), static_cast<void*>(cached_tags + 1), sizeof(tag));
+    for (int i = cached + 1; i < current_position; i++)
+        cached_tags[i - 1] = cached_tags[i];
 
-    current_position--;
     memset(static_cast<void*>(cached_tags + current_position - 1), 0, sizeof(tag));
+    current_position--;
 }
 
 void atb::core::tag_cashier::uncache(tag& element) {
