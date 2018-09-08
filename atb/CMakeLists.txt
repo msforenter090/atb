@@ -19,10 +19,9 @@ include_directories(${atb_library_include_path})
 include_directories("include/")
 
 # ------------------------------------------------------------------------------
-# Compiler options and target
+# target setup
 # ------------------------------------------------------------------------------
 project(${atb_target})
-set(CMAKE_SKIP_RPATH ON)
 add_executable(${atb_target} ${sources} ${headers})
 
 # ------------------------------------------------------------------------------
@@ -65,3 +64,4 @@ message(STATUS "atb -> Boost Libraries dir: "    ${Boost_LIBRARIES})
 target_link_libraries(  ${atb_target} ${atb_networking_library}
                         ${atb_core_library} ${atb_common_library}
                         ${Boost_LIBRARIES})
+
