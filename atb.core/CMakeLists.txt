@@ -41,9 +41,8 @@ include_directories("source")
 get_include_path(bin_include_path)
 
 # ------------------------------------------------------------------------------
-# Compiler options and target
+# target setup
 # ------------------------------------------------------------------------------
-set(CMAKE_SKIP_RPATH ON)
 add_library(${atb_core} STATIC ${sources} ${headers})
 set_property(TARGET ${atb_core} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
@@ -68,3 +67,4 @@ add_custom_command(TARGET ${atb_core} POST_BUILD
     -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${bin_include_path}/${atb_core}
 )
+

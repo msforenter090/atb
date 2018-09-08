@@ -23,9 +23,8 @@ include_directories("include/")
 include_directories("source/")
 
 # ------------------------------------------------------------------------------
-# Compiler options and target
+# target setup
 # ------------------------------------------------------------------------------
-set(CMAKE_SKIP_RPATH ON)
 add_library(${atb_networking_target} STATIC ${sources} ${headers})
 set_property(TARGET ${atb_networking_target} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
@@ -50,3 +49,4 @@ add_custom_command(TARGET ${atb_networking_target} POST_BUILD
     -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${atb_library_include_path}/${atb_networking_target}
 )
+

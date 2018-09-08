@@ -23,9 +23,8 @@ get_include_path(bin_include_path)
 add_definitions(-DATB_COMMON_API_EXPORT)
 
 #-------------------------------------------------------------------------------
-# Compiler options and target
+# target setup
 #-------------------------------------------------------------------------------
-set(CMAKE_SKIP_RPATH ON)
 add_library(${atb_common_target} STATIC ${sources} ${headers})
 set_property(TARGET ${atb_common_target} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
@@ -45,3 +44,4 @@ add_custom_command(TARGET ${atb_common_target} POST_BUILD
     -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${bin_include_path}/${atb_common_target}
 )
+

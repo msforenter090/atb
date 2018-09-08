@@ -23,6 +23,12 @@ set(BOOST_VERSION 1.62.0)
 set(spd_log_include "spdlog/include/")
 include_directories(${spd_log_include})
 
+#-------------------------------------------------------------------------------
+# Compiler options
+#-------------------------------------------------------------------------------
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_SKIP_RPATH ON)
+
 # --------------------------------------
 # boost
 # --------------------------------------
@@ -145,3 +151,4 @@ set_target_properties(
     ARCHIVE_OUTPUT_DIRECTORY ${atb_library_binary_path}
     RUNTIME_OUTPUT_DIRECTORY ${atb_library_binary_path}
 )
+
