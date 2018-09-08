@@ -33,7 +33,7 @@ set(CMAKE_SKIP_RPATH ON)
 # boost
 # --------------------------------------
 set(Boost_USE_STATIC_LIBS ON)                           # only find static libs
-find_package(Boost ${BOOST_VERSION} EXACT REQUIRED thread system regex)
+find_package(Boost ${BOOST_VERSION} REQUIRED thread system regex)
 if(Boost_FOUND)
     message(STATUS "Boost Include directory: "  ${Boost_INCLUDE_DIRS})
     message(STATUS "Boost Library directory: "  ${Boost_LIBRARY_DIRS})
