@@ -1,4 +1,4 @@
-#include<deamonizer.h>
+#include<daemonizer.h>
 
 #ifdef __linux__
 
@@ -19,7 +19,7 @@
 
 #endif
 
-BOOL8 atb::platform::damonizer::daemonize(service_thread service) const {
+BYTE8 atb::platform::daemonizer::daemonize(service_thread service) const {
 #ifdef __linux__
 
     pid_t pid;
@@ -60,6 +60,7 @@ BOOL8 atb::platform::damonizer::daemonize(service_thread service) const {
     for (x = sysconf(_SC_OPEN_MAX); x>=0; x--) {
         close (x);
     }
+    (*service)();
 
 #else
 

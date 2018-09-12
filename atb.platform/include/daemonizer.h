@@ -17,7 +17,8 @@ namespace atb {
         typedef void (*service_thread)();
 
         class daemonizer {
-            BOOL8 daemonize(service_thread service) const;
+        public:
+            BYTE8 daemonize(service_thread service) const;
         };
 
     }

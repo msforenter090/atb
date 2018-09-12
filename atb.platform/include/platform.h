@@ -5,12 +5,12 @@
 #pragma once
 
 #ifdef __linux__
-
+#include<stdint.h>
 // -----------------------------------------------------------------------------
 // Types for Linux system compiled with gcc or g++.
 // -----------------------------------------------------------------------------
 
-#define BYTE        int8_t
+#define BYTE8       int8_t
 #define UBYTE8      unsigned int8_t
 
 #define SHORT16     int16_t

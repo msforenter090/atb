@@ -93,6 +93,12 @@ add_subdirectory(${atb_core_test_target})
 add_test(${atb_core_test_target} ${atb_library_binary_path}/${atb_core_test_target})
 
 # --------------------------------------
+# atb.platform
+# --------------------------------------
+set(atb_platform_target "atb.platform")
+add_subdirectory(${atb_platform_target})
+
+# --------------------------------------
 # atb
 # --------------------------------------
 set(atb_target "atb")
@@ -122,7 +128,7 @@ add_dependencies(${atb_core_test_target} ${google_test_build} ${atb_core_target}
 set_target_properties(
     # libraries and main program
     ${atb_common_target} ${atb_core_target}
-    ${atb_networking_target} ${atb_target}
+    ${atb_networking_target} ${atb_platform_target} ${atb_target}
 
     # test programs
     ${google_test_build}
@@ -139,7 +145,7 @@ set_target_properties(
 set_target_properties(
     # libraries and main program
     ${atb_common_target} ${atb_core_target}
-    ${atb_networking_target} ${atb_target}
+    ${atb_networking_target} ${atb_platform_target} ${atb_target}
 
     # test programs
     ${google_test_build}

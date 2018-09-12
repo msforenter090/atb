@@ -59,9 +59,17 @@ message(STATUS "atb -> Boost include dir:   "      ${Boost_INCLUDE_DIRS})
 message(STATUS "atb -> Boost Libraries dir: "    ${Boost_LIBRARIES})
 
 # ---------------------------------------
+# atb.platform
+# ---------------------------------------
+get_platform_independent_static_library_name(atb_platform_library "atb.platform")
+set(atb_platform_library ${atb_library_binary_path}/${atb_platform_library})
+include_directories(${atb_library_include_path})
+message(STATUS "atb -> Platform library:  " ${atb_platform_library})
+
+# ---------------------------------------
 # set libraries
 # ---------------------------------------
 target_link_libraries(  ${atb_target} ${atb_networking_library}
-                        ${atb_core_library} ${atb_common_library}
+                        ${atb_core_library} ${atb_common_library} ${atb_platform_library}
                         ${Boost_LIBRARIES})
 
