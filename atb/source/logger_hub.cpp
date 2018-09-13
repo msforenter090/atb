@@ -1,15 +1,26 @@
 #include "logger_hub.h"
 
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // std
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 #include <stdlib.h>
 #include <iostream>
 #include <stdarg.h>
 
-atb::logger_hub::logger_hub() : console(spdlog::stdout_color_mt("console")) {
+#ifdef __linux__
+#define LOG_FILE "/var/log/atb/atb_log.log"
+#else
+#define LOG_FILE "atb_log.log"
+#endif
+
+atb::logger_hub::logger_hub() : console() {
     spdlog::set_level(spdlog::level::debug);
 
+    try {
+        console = spdlog::basic_logger_mt("basic_logger", LOG_FILE);
+    } catch (const spdlog::spdlog_ex &ex) {
+        std::cout << "Log init failed: " << ex.what() << std::endl;
+    }
     for (short i = 0; i < max_log_lines; i++)
         free_log_lines.push_back(malloc(log_line_length));
 }

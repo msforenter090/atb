@@ -14,6 +14,7 @@ void my_service();
 int main(int argc, char** argv) {
     atb::platform::daemonizer d;
     d.daemonize(my_service);
+    // my_service();
     #ifdef _WIN32
     system("pause");
 #endif
@@ -21,9 +22,9 @@ int main(int argc, char** argv) {
 }
 
 void my_service() {
-    /*atb::application application;
+    atb::application application;
     application.start();
     boost::this_thread::sleep_for(boost::chrono::milliseconds(6000));
-    application.stop();*/
+    application.stop();
     std::cout << "Hello Daemon." << std::endl;
 }
